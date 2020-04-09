@@ -1,3 +1,9 @@
+"""
+This class contains the literal name of the tables in the
+LST telescope database
+"""
+
+
 class LstTableNames:
     LST_ANALYSIS_EVALUATION = "LST_ANALYSIS_EVALUATION"
     LST_CONFIGURATION = "LST_CONFIGURATION"
