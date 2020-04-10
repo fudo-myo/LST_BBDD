@@ -22,10 +22,11 @@ class LstDatesService:
 
     def insert_dates(self, dates_insert: DatesDto):
         try:
-            dates_aux = LstDates(date=dates_insert.date)
+            dates_aux = LstDates(date_time=dates_insert.date)
             self.__session.add(dates_aux)
             self.__session.commit()
             if dates_aux.id_date is not None:
+                dates_insert.id_date = dates_aux.id_date
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstDates.__tablename__.name,
                                                                           dates_aux.id_date))
             else:
