@@ -30,6 +30,7 @@ class LstConfigurationService:
             self.__session.add(config_aux)
             self.__session.commit()
             if config_aux.id_config is not None:
+                config_insert.id_config = config_aux.id_config
                 print(" RECORD INSERTED IN TABLE '{}' WITH ID '{}' ".format(LstConfiguration.__tablename__.name,
                                                                             config_aux.id_config))
             else:
