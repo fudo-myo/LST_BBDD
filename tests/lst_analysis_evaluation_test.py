@@ -39,11 +39,11 @@ class LstAnalysisEvaluationTests(unittest.TestCase):
         analysis_service.update_analysis_eval(analysis_dto_before.id_analysis_evaluation, 33, "update", 8.90)
         analysis_dto_after: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
         self.assertNotEqual(analysis_dto_before.id_lst_r1_data_check_plot, analysis_dto_after.id_lst_r1_data_check_plot,
-                            TestUtils.assert_update_message(LstAnalysisEvaluation.id_lst_r1_data_check_plot))
+                            TestUtils.assert_update_message(LstAnalysisEvaluation.id_lst_r1_data_check_plot.name))
         self.assertNotEqual(analysis_dto_before.parameter_description, analysis_dto_after.parameter_description,
-                            TestUtils.assert_update_message(LstAnalysisEvaluation.parameter_description))
+                            TestUtils.assert_update_message(LstAnalysisEvaluation.parameter_description.name))
         self.assertNotEqual(analysis_dto_before.parameter_value, analysis_dto_after.parameter_value,
-                            TestUtils.assert_update_message(LstAnalysisEvaluation.parameter_value))
+                            TestUtils.assert_update_message(LstAnalysisEvaluation.parameter_value.name))
         TestUtils.print_update_trace(LstTableNames.LST_ANALYSIS_EVALUATION, analysis_dto_after.id_analysis_evaluation)
 
     def test_delete_analysis_evaluation(self):
@@ -58,11 +58,11 @@ class LstAnalysisEvaluationTests(unittest.TestCase):
         TestUtils.print_delete_trace(LstTableNames.LST_ANALYSIS_EVALUATION, analysis_dto_before.id_analysis_evaluation)
 
     def test_get_all_analysis(self):
-        for _ in range(10):
+        for _ in range(5):
             self.test_insert_analysis_evaluation()
         analysis_service = LstAnalysisEvaluationService()
         analysis_list: List[AnalysisEvaluationDto] = analysis_service.get_all_analysis_eval()
-        self.assertGreaterEqual(len(analysis_list), 10,
+        self.assertGreaterEqual(len(analysis_list), 5,
                                 TestUtils.assert_get_all_message(LstTableNames.LST_ANALYSIS_EVALUATION))
         TestUtils.print_get_all_trace(LstTableNames.LST_ANALYSIS_EVALUATION, len(analysis_list))
 
@@ -72,7 +72,7 @@ class LstAnalysisEvaluationTests(unittest.TestCase):
         analysis_dto: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
         self.assertIsNotNone(analysis_dto.id_analysis_evaluation,
                              TestUtils.assert_get_by_id_message(LstTableNames.LST_ANALYSIS_EVALUATION,
-                                                                analysis_dto.id_analysis_evaluation))
+                                                                value))
         TestUtils.print_get_by_id_trace(LstTableNames.LST_ANALYSIS_EVALUATION, analysis_dto.id_analysis_evaluation)
 
 
