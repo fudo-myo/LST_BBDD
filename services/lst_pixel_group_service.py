@@ -29,7 +29,8 @@ class LstPixelGroupService:
             )
             self.__session.add(pixel_group_aux)
             self.__session.commit()
-            if pixel_group_aux.id_config is not None:
+            if pixel_group_aux.id_pixel_group is not None:
+                pixel_group_insert.id_pixel_group = pixel_group_aux.id_pixel_group
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstPixelGroup.__tablename__.name,
                                                                           pixel_group_aux.pixel_group_number))
             else:
@@ -40,26 +41,27 @@ class LstPixelGroupService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def update_pixel_group(self, id_config, pixel_group_number_to_search, pixel_group_number_to_update=None,
-                           id_pixel_group=None, other_data=None):
+    def update_pixel_group(self, id_pixel_group, pixel_group_number_to_search, pixel_group_number_to_update=None,
+                           id_config=None, other_data=None):
         try:
-            pixel_group_before: PixelGroupDto = self.__pixel_group_by_id(pixel_group_number_to_search, id_config)
-            if Checkers.validate_int(id_config, LstPixelGroup.id_config.name) and Checkers.validate_int(
+            pixel_group_before: PixelGroupDto = self.get_pixel_group_by_id(id_pixel_group, pixel_group_number_to_search)
+            if Checkers.validate_int(id_pixel_group, LstPixelGroup.id_config.name) and Checkers.validate_int(
                     pixel_group_number_to_search,
                     LstPixelGroup.pixel_group_number.name) and pixel_group_before.id_config is not None and pixel_group_before.pixel_group_number is not None:
-                self.__session.query(LstPixelGroup).filter(LstPixelGroup.id_config.like(id_config),
+                self.__session.query(LstPixelGroup).filter(LstPixelGroup.id_pixel_group.like(id_pixel_group),
                                                            LstPixelGroup.pixel_group_number.like(
                                                                pixel_group_number_to_search)) \
                     .update({
-                    LstPixelGroup.pixel_group_number_to_update: Checkers.check_field_not_null(
-                        LstPixelGroup.pixel_group_number_to_update, pixel_group_number_to_update),
+                    LstPixelGroup.pixel_group_number: Checkers.check_field_not_null(
+                        LstPixelGroup.pixel_group_number, pixel_group_number_to_update),
                     LstPixelGroup.id_config: Checkers.check_field_not_null(LstPixelGroup.id_config, id_config),
                     LstPixelGroup.other_data: Checkers.check_field_not_null(LstPixelGroup.other_data, other_data)
                 },
                     synchronize_session=False
                 )
                 self.__session.commit()
-                pixel_group_after: PixelGroupDto = self.get_pixel_group_by_id(pixel_group_number_to_search, id_config)
+                pixel_group_after: PixelGroupDto = self.get_pixel_group_by_id(id_pixel_group,
+                                                                              pixel_group_number_to_search)
                 if pixel_group_before.__dict__ != pixel_group_after.__dict__:
                     print("RECORD UPDATE IN TABLE '{}' WITH ID '{}'".format(LstPixelGroup.__tablename__.name,
                                                                             id_pixel_group))
@@ -74,24 +76,24 @@ class LstPixelGroupService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def delete_pixel_group(self, id_config, pixel_group_number):
+    def delete_pixel_group(self, id_pixel_group, pixel_group_number):
         try:
-            pixel_group_before: PixelGroupDto = self.get_pixel_group_by_id(pixel_group_number, id_config)
-            if Checkers.validate_int(id_config, LstPixelGroup.id_config.name) and Checkers.validate_int(
+            pixel_group_before: PixelGroupDto = self.get_pixel_group_by_id(id_pixel_group, pixel_group_number)
+            if Checkers.validate_int(id_pixel_group, LstPixelGroup.id_config.name) and Checkers.validate_int(
                     pixel_group_number,
                     LstPixelGroup.pixel_group_number.name) and pixel_group_before.id_config is not None and pixel_group_before.pixel_group_number is not None:
-                self.__session.query(LstPixelGroup).filter(LstPixelGroup.id_pixel_group.like(id_config),
+                self.__session.query(LstPixelGroup).filter(LstPixelGroup.id_pixel_group.like(id_pixel_group),
                                                            LstPixelGroup.pixel_group_number.like(pixel_group_number)) \
                     .delete(synchronize_session=False)
                 self.__session.commit()
-                pixel_group_after: PixelGroupDto = self.get_pixel_group_by_id(pixel_group_number, id_config)
+                pixel_group_after: PixelGroupDto = self.get_pixel_group_by_id(pixel_group_number, id_pixel_group)
                 if pixel_group_before.id_pixel_group is not None and pixel_group_after.id_pixel_group is None:
                     print("RECORD DELETE IN TABLE '{}' WITH ID '{}'".format(LstPixelGroup.__tablename__.name,
                                                                             pixel_group_before.id_pixel_group))
                 else:
                     print(" THE RECORD OF TABLE '{}' WITH ID '{}' HAS NOT BEEN DELETED BECAUSE IT DID NOT EXIST".format(
                         LstPixelGroup.__tablename__.name,
-                        id_config))
+                        id_pixel_group))
             else:
                 print(" THE RECORD OF TABLE '{}' COULD NOT BE DELETED".format(LstPixelGroup.__tablename__.name))
 
@@ -123,10 +125,10 @@ class LstPixelGroupService:
 
         return pixel_group_dto_list
 
-    def get_pixel_group_by_id(self, pixel_group_number, id_config):
+    def get_pixel_group_by_id(self, id_pixel_group, pixel_group_number):
         try:
             self.__pixel_group_by_id: PixelGroupDto = self.__session.query(LstPixelGroup).filter(
-                LstPixelGroup.id_config.like(id_config),
+                LstPixelGroup.id_pixel_group.like(id_pixel_group),
                 LstPixelGroup.pixel_group_number.like(pixel_group_number)).first()
             if self.__pixel_group_by_id is not None:
                 return create_pixel_group(
@@ -138,7 +140,7 @@ class LstPixelGroupService:
             else:
                 Checkers.print_object_filter_null(
                     LstPixelGroup.pixel_group_number.name + ", " + LstPixelGroup.id_config.name,
-                    str(pixel_group_number) + ", " + str(id_config))
+                    str(pixel_group_number) + ", " + str(id_pixel_group))
                 return create_pixel_group(None, None, None, None)
 
         except (InvalidRequestError, NameError) as error_request:
