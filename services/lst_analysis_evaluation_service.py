@@ -30,6 +30,7 @@ class LstAnalysisEvaluationService:
             self.__session.add(analysis_eval_aux)
             self.__session.commit()
             if analysis_eval_aux.id_analysis_evaluation is not None:
+                analysis_eval_insert.id_analysis_evaluation = analysis_eval_aux.id_analysis_evaluation
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstAnalysisEvaluation.__tablename__.name,
                                                                           analysis_eval_aux.id_analysis_evaluation))
             else:
