@@ -34,6 +34,7 @@ class LstDl1aTests(unittest.TestCase):
         value = self.test_insert_dl1a()
         dl1a_service = LstDl1aService()
         dl1a_before: Dl1aDto = dl1a_service.get_dl1a_by_id(value)
+        self.assertIsNotNone(dl1a_before.id_dl1a)
         dl1a_service.update_dl1a(dl1a_before.id_dl1a, 3, "TU path update")
         dl1a_after: Dl1aDto = dl1a_service.get_dl1a_by_id(value)
         self.assertIsNotNone(dl1a_after.id_dl1a)

@@ -37,6 +37,7 @@ class LstFilesOfSubrunTests(unittest.TestCase):
         value = self.test_insert_files_of_subrun()
         files_service = LstFilesOfSubrunService()
         files_before: FilesOfSubrunDto = files_service.get_file_subrun_by_id(value)
+        self.assertIsNotNone(files_before.id_file_subrun)
         files_service.update_files_of_subrun(files_before.id_file_subrun, 4, "TU path update", 80, "TU array numfiles")
         files_after: FilesOfSubrunDto = files_service.get_file_subrun_by_id(value)
         self.assertIsNotNone(files_after.id_file_subrun)
