@@ -109,7 +109,12 @@ class LstPixelInformationService:
                 self.__session.commit()
                 pixel_info_after: PixelInformationDto = self.get_pixel_info_by_id(id_record, pixel_id,
                                                                                   pixel_group_number)
-                if pixel_info_before.id_record is not None and pixel_info_after.id_record is None:
+                if pixel_info_before.id_record is not None and\
+                        pixel_info_before.pixel_id is not None and \
+                        pixel_info_before.pixel_group_number is not None and \
+                        pixel_info_after.pixel_id is None and \
+                        pixel_info_after.pixel_group_number is None and \
+                        pixel_info_after.id_record is None:
                     print("RECORD DELETE IN TABLE '{}' WITH ID '{}'".format(LstPixelInformation.__tablename__.name,
                                                                             pixel_id))
                 else:

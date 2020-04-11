@@ -73,6 +73,8 @@ class LstPixelInformationTests(unittest.TestCase):
         pixel_info_service.delete_pixel_info(id_record, pixel_id, pixel_group_number)
         pixel_dto_after: PixelInformationDto = pixel_info_service.get_pixel_info_by_id(id_record, pixel_id,
                                                                                        pixel_group_number)
+        self.assertIsNone(pixel_dto_after.pixel_id)
+        self.assertIsNone(pixel_dto_after.pixel_group_number)
         self.assertIsNone(pixel_dto_after.id_record, TestUtils.assert_delete_message(
             str(pixel_dto_after.id_record) + ", " + str(pixel_dto_after.pixel_id) + ", " + str(
                 pixel_dto_after.pixel_group_number),
