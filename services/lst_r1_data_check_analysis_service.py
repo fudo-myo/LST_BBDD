@@ -67,7 +67,9 @@ class LstR1DataCheckAnalysisService:
                 )
                 self.__session.commit()
                 r1_after: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_record,
-                                                                                         id_r1_data_check_to_search)
+                                                                                         Checkers.check_field_not_null(
+                                                                                             r1_before.id_r1_data_check,
+                                                                                             id_r1_data_check_to_update))
                 if r1_before.__dict__ != r1_after.__dict__:
                     print("RECORD UPDATE IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckAnalysis.__tablename__.name,
                                                                             id_r1_data_check_to_search))
@@ -96,9 +98,9 @@ class LstR1DataCheckAnalysisService:
                     .delete(synchronize_session=False)
                 self.__session.commit()
                 r1_after: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_record, id_r1_data_check)
-                if r1_before.id_r1_data_check is not None and\
+                if r1_before.id_r1_data_check is not None and \
                         r1_before.id_record is not None and \
-                        r1_after. id_record is None and \
+                        r1_after.id_record is None and \
                         r1_after.id_r1_data_check is None:
                     print("RECORD DELETE IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckAnalysis.__tablename__.name,
                                                                             id_r1_data_check))
