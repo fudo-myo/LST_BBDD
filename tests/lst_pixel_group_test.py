@@ -30,12 +30,14 @@ class LstPixelGroupTests(unittest.TestCase):
         self.assertIsNotNone(pixel_group_dto.id_pixel_group,
                              TestUtils.assert_insert_message(LstTableNames.LST_PIXEL_GROUP))
         TestUtils.print_insert_trace(LstTableNames.LST_PIXEL_GROUP, pixel_group_dto.id_pixel_group)
-        return pixel_group_dto.id_pixel_group
+        return pixel_group_dto.id_pixel_group, pixel_group_dto.pixel_group_number
 
     def test_update_pixel_group(self):
-        value = self.test_insert_pixel_group()
+        id_pixel_group, pixel_group_number = self.test_insert_pixel_group()
         pixel_group_service = LstPixelGroupService()
-        group_before: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(value, 1)
+        group_before: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(id_pixel_group, pixel_group_number)
+        self.assertIsNotNone(group_before.id_pixel_group)
+        self.assertIsNotNone(group_before.pixel_group_number)
         pixel_group_service.update_pixel_group(group_before.id_pixel_group, group_before.pixel_group_number, 24, 42,
                                                "TU other data")
         group_after: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(group_before.id_pixel_group, 24)

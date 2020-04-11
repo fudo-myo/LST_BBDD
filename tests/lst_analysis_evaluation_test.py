@@ -36,6 +36,7 @@ class LstAnalysisEvaluationTests(unittest.TestCase):
         value = self.test_insert_analysis_evaluation()
         analysis_service = LstAnalysisEvaluationService()
         analysis_dto_before: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
+        self.assertIsNotNone(analysis_dto_before.id_analysis_evaluation)
         analysis_service.update_analysis_eval(analysis_dto_before.id_analysis_evaluation, 33, "update", 8.90)
         analysis_dto_after: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
         self.assertIsNotNone(analysis_dto_after.id_analysis_evaluation)
