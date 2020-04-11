@@ -31,6 +31,7 @@ class LstR1DataCheckPlotService:
             self.__session.add(r1_data_check_plot_aux)
             self.__session.commit()
             if r1_data_check_plot_aux.id_record is not None:
+                r1_data_check_plot_insert.id_record = r1_data_check_plot_aux.id_record
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckPlot.__tablename__.name,
                                                                           r1_data_check_plot_aux.id_lst_r1_data_check_plot))
             else:
@@ -46,9 +47,13 @@ class LstR1DataCheckPlotService:
                                   lst_r1_data_check_plot_path=None,
                                   lst_r1_data_check_plot_description=None):
         try:
-            r1_before: R1DataCheckPlotDto = self.get_r1_data_check_plot_by_id(id_lst_r1_data_check_plot_to_search)
+            r1_before: R1DataCheckPlotDto = self.get_r1_data_check_plot_by_id(id_record,
+                                                                              id_lst_r1_data_check_plot_to_search)
             if Checkers.validate_int(id_lst_r1_data_check_plot_to_search,
-                                     LstR1DataCheckPlot.id_lst_r1_data_check_plot.name) and r1_before.id_record is not None and r1_before.id_lst_r1_data_check_plot is not None:
+                                     LstR1DataCheckPlot.id_lst_r1_data_check_plot.name) and \
+                    Checkers.validate_int(id_record, LstR1DataCheckPlot.id_record.name) and \
+                    r1_before.id_record is not None and \
+                    r1_before.id_lst_r1_data_check_plot is not None:
                 self.__session.query(LstR1DataCheckPlot).filter(LstR1DataCheckPlot.id_record.like(id_record)) \
                     .filter(LstR1DataCheckPlot.id_lst_r1_data_check_plot.like(id_lst_r1_data_check_plot_to_search)) \
                     .update({
@@ -65,7 +70,10 @@ class LstR1DataCheckPlotService:
                     synchronize_session=False
                 )
                 self.__session.commit()
-                r1_after: R1DataCheckPlotDto = self.get_r1_data_check_plot_by_id(id_lst_r1_data_check_plot_to_search)
+                r1_after: R1DataCheckPlotDto = self.get_r1_data_check_plot_by_id(id_record,
+                                                                                 Checkers.check_field_not_null(
+                                                                                     r1_before.id_lst_r1_data_check_plot,
+                                                                                     id_lst_r1_data_check_plot_to_update))
                 if r1_before.__dict__ != r1_after.__dict__:
                     print("RECORD UPDATE IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckPlot.__tablename__.name,
                                                                             id_record))
@@ -81,17 +89,22 @@ class LstR1DataCheckPlotService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def delete_r1_data_check_plot(self, id_lst_r1_data_check_plot):
+    def delete_r1_data_check_plot(self, id_record, id_lst_r1_data_check_plot):
         try:
-            r1_before: R1DataCheckPlotDto = self.get_r1_data_check_plot_by_id(id_lst_r1_data_check_plot)
-            if Checkers.validate_int(id_lst_r1_data_check_plot,
-                                     LstR1DataCheckPlot.id_lst_r1_data_check_plot.name) and r1_before.id_record is not None and r1_before.id_lst_r1_data_check_plot is not None:
+            r1_before: R1DataCheckPlotDto = self.get_r1_data_check_plot_by_id(id_record, id_lst_r1_data_check_plot)
+            if Checkers.validate_int(id_lst_r1_data_check_plot, LstR1DataCheckPlot.id_lst_r1_data_check_plot.name) and \
+                    Checkers.validate_int(id_record, LstR1DataCheckPlot.id_record.name) and \
+                    r1_before.id_record is not None and \
+                    r1_before.id_lst_r1_data_check_plot is not None:
                 self.__session.query(LstR1DataCheckPlot).filter(
                     LstR1DataCheckPlot.id_lst_r1_data_check_plot.like(id_lst_r1_data_check_plot)) \
                     .delete(synchronize_session=False)
                 self.__session.commit()
-                r1_after: R1DataCheckPlotDto = self.get_r1_data_check_plot_by_id(id_lst_r1_data_check_plot)
-                if r1_before.id_record is not None and r1_after.id_record is None:
+                r1_after: R1DataCheckPlotDto = self.get_r1_data_check_plot_by_id(id_record, id_lst_r1_data_check_plot)
+                if r1_before.id_record is not None and \
+                        r1_before.id_lst_r1_data_check_plot is not None and \
+                        r1_after.id_lst_r1_data_check_plot is None and \
+                        r1_after.id_record is None:
                     print("RECORD DELETE IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckPlot.__tablename__.name,
                                                                             id_lst_r1_data_check_plot))
                 else:
@@ -130,10 +143,11 @@ class LstR1DataCheckPlotService:
 
         return r1_data_check_plot_dto_list
 
-    def get_r1_data_check_plot_by_id(self, id_lst_r1_data_check_plot):
+    def get_r1_data_check_plot_by_id(self, id_record, id_lst_r1_data_check_plot):
         try:
             self.__r1_data_check_plot_by_id: R1DataCheckPlotDto = self.__session.query(LstR1DataCheckPlot).filter(
-                LstR1DataCheckPlot.id_lst_r1_data_check_plot.like(id_lst_r1_data_check_plot)).first()
+                LstR1DataCheckPlot.id_lst_r1_data_check_plot.like(id_lst_r1_data_check_plot),
+                LstR1DataCheckPlot.id_record.like(id_record)).first()
             if self.__r1_data_check_plot_by_id is not None:
                 return create_r1_data_check_plot(
                     self.__r1_data_check_plot_by_id.id_record,

@@ -74,8 +74,13 @@ class LstPixelInformationService:
                     synchronize_session=False
                 )
                 self.__session.commit()
-                pixel_info_after: PixelInformationDto = self.get_pixel_info_by_id(id_record, pixel_id_to_search,
-                                                                                  pixel_group_number_to_search)
+                pixel_info_after: PixelInformationDto = self.get_pixel_info_by_id(id_record,
+                                                                                  Checkers.check_field_not_null(
+                                                                                      pixel_info_before.pixel_id,
+                                                                                      pixel_id_to_update),
+                                                                                  Checkers.check_field_not_null(
+                                                                                      pixel_info_before.pixel_group_number,
+                                                                                      pixel_group_number_to_update))
                 if pixel_info_before.__dict__ != pixel_info_after.__dict__:
                     print(
                         "RECORD UPDATE IN TABLE '{}' WITH PIXEL_ID '{}'".format(LstPixelInformation.__tablename__.name,
@@ -109,7 +114,7 @@ class LstPixelInformationService:
                 self.__session.commit()
                 pixel_info_after: PixelInformationDto = self.get_pixel_info_by_id(id_record, pixel_id,
                                                                                   pixel_group_number)
-                if pixel_info_before.id_record is not None and\
+                if pixel_info_before.id_record is not None and \
                         pixel_info_before.pixel_id is not None and \
                         pixel_info_before.pixel_group_number is not None and \
                         pixel_info_after.pixel_id is None and \

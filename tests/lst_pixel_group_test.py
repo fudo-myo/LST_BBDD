@@ -53,13 +53,13 @@ class LstPixelGroupTests(unittest.TestCase):
                                      str(group_before.id_pixel_group) + ", " + str(group_before.pixel_group_number))
 
     def test_delete_pixel_group(self):
-        value = self.test_insert_pixel_group()
+        id_pixel_group, pixel_group_number = self.test_insert_pixel_group()
         pixel_group_service = LstPixelGroupService()
-        group_before: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(value, 1)
+        group_before: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(id_pixel_group, pixel_group_number)
         self.assertIsNotNone(group_before.id_pixel_group)
         self.assertIsNotNone(group_before.pixel_group_number)
         pixel_group_service.delete_pixel_group(group_before.id_pixel_group, group_before.pixel_group_number)
-        group_after: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(value, 1)
+        group_after: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(id_pixel_group, pixel_group_number)
         self.assertIsNone(group_after.pixel_group_number)
         self.assertIsNone(group_after.id_pixel_group, TestUtils.assert_delete_message(
             str(group_after.id_pixel_group) + ", " + str(group_after.pixel_group_number),
@@ -77,9 +77,9 @@ class LstPixelGroupTests(unittest.TestCase):
         TestUtils.print_get_all_trace(LstTableNames.LST_PIXEL_GROUP, len(pixel_group_list))
 
     def test_get_by_id_pixel_group(self):
-        value = self.test_insert_pixel_group()
+        id_pixel_group, pixel_group_number = self.test_insert_pixel_group()
         pixel_group_service = LstPixelGroupService()
-        pixel_group_dto: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(value, 1)
+        pixel_group_dto: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(id_pixel_group, pixel_group_number)
         self.assertIsNotNone(pixel_group_dto.id_pixel_group,
                              TestUtils.assert_get_by_id_message(LstTableNames.LST_PIXEL_GROUP,
                                                                 str(pixel_group_dto.id_pixel_group) + ", " + str(

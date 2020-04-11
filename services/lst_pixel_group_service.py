@@ -61,7 +61,9 @@ class LstPixelGroupService:
                 )
                 self.__session.commit()
                 pixel_group_after: PixelGroupDto = self.get_pixel_group_by_id(id_pixel_group,
-                                                                              pixel_group_number_to_search)
+                                                                              Checkers.check_field_not_null(
+                                                                                  pixel_group_before.pixel_group_number,
+                                                                                  pixel_group_number_to_update))
                 if pixel_group_before.__dict__ != pixel_group_after.__dict__:
                     print("RECORD UPDATE IN TABLE '{}' WITH ID '{}'".format(LstPixelGroup.__tablename__.name,
                                                                             id_pixel_group))
