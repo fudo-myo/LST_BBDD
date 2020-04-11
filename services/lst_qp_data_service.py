@@ -34,6 +34,7 @@ class LstQpDataService:
             self.__session.add(qp_data_aux)
             self.__session.commit()
             if qp_data_aux.id_qp_data is not None:
+                qp_data_insert.id_qp_data = qp_data_aux.id_qp_data
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstQpData.__tablename__.name,
                                                                           qp_data_aux.id_qp_data))
             else:
