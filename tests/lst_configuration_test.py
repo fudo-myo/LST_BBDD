@@ -53,6 +53,7 @@ class LstConfigurationTests(unittest.TestCase):
         value = self.test_insert_configuration()
         configuration_service = LstConfigurationService()
         config_dto_before: ConfigurationDto = configuration_service.get_config_by_id(value)
+        self.assertIsNotNone(config_dto_before.id_config)
         configuration_service.delete_by_id(config_dto_before.id_config)
         config_dto_after: ConfigurationDto = configuration_service.get_config_by_id(value)
         self.assertIsNone(config_dto_after.id_config,

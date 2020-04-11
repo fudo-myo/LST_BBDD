@@ -47,9 +47,10 @@ class LstDl1aTests(unittest.TestCase):
         value = self.test_insert_dl1a()
         dl1a_service = LstDl1aService()
         dl1a_before: Dl1aDto = dl1a_service.get_dl1a_by_id(value)
+        self.assertIsNotNone(dl1a_before.id_dl1a)
         dl1a_service.delete_dl1a(dl1a_before.id_dl1a)
         dl1a_after: Dl1aDto = dl1a_service.get_dl1a_by_id(value)
-        self.assertIsNone(dl1a_after.id_dl1a, TestUtils.assert_delete_message(value, LstTableNames.LST_DL1A))
+        self.assertIsNone(dl1a_after.id_dl1a, TestUtils.assert_delete_message(dl1a_after.id_dl1a, LstTableNames.LST_DL1A))
         TestUtils.print_delete_trace(LstTableNames.LST_DL1A, dl1a_before.id_dl1a)
 
     def test_get_all_dl1a(self):

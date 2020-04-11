@@ -54,6 +54,8 @@ class LstPixelGroupTests(unittest.TestCase):
         value = self.test_insert_pixel_group()
         pixel_group_service = LstPixelGroupService()
         group_before: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(value, 1)
+        self.assertIsNotNone(group_before.id_pixel_group)
+        self.assertIsNotNone(group_before.pixel_group_number)
         pixel_group_service.delete_pixel_group(group_before.id_pixel_group, group_before.pixel_group_number)
         group_after: PixelGroupDto = pixel_group_service.get_pixel_group_by_id(value, 1)
         self.assertIsNone(group_after.id_pixel_group, TestUtils.assert_delete_message(
