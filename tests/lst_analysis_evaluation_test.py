@@ -51,10 +51,11 @@ class LstAnalysisEvaluationTests(unittest.TestCase):
         value = self.test_insert_analysis_evaluation()
         analysis_service = LstAnalysisEvaluationService()
         analysis_dto_before: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
+        self.assertIsNotNone(analysis_dto_before.id_analysis_evaluation)
         analysis_service.delete_analysis_eval(analysis_dto_before.id_analysis_evaluation)
         analysis_dto_after: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
         self.assertIsNone(analysis_dto_after.id_analysis_evaluation,
-                          TestUtils.assert_delete_message(analysis_dto_before.id_analysis_evaluation,
+                          TestUtils.assert_delete_message(analysis_dto_after.id_analysis_evaluation,
                                                           LstTableNames.LST_ANALYSIS_EVALUATION))
         TestUtils.print_delete_trace(LstTableNames.LST_ANALYSIS_EVALUATION, analysis_dto_before.id_analysis_evaluation)
 
