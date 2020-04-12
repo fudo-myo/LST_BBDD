@@ -34,6 +34,7 @@ class LstProductionsService:
             self.__session.add(productions_aux)
             self.__session.commit()
             if productions_aux.id_production is not None:
+                productions_insert.id_production = productions_aux.id_production
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstProductions.__tablename__.name,
                                                                           productions_aux.id_production))
             else:

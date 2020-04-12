@@ -28,6 +28,7 @@ class LstDl1aService:
             self.__session.add(dl1a_aux)
             self.__session.commit()
             if dl1a_aux.id_dl1a is not None:
+                dl1a_insert.id_dl1a = dl1a_aux.id_dl1a
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstDl1a.__tablename__.name,
                                                                           dl1a_aux.id_dl1a))
             else:

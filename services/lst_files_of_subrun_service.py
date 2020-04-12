@@ -31,6 +31,7 @@ class LstFilesOfSubrunService:
             self.__session.add(files_of_subrun_aux)
             self.__session.commit()
             if files_of_subrun_aux.id_file_subrun is not None:
+                files_of_subrun_insert.id_file_subrun = files_of_subrun_aux.id_file_subrun
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstFilesOfSubrun.__tablename__.name,
                                                                           files_of_subrun_aux.id_file_subrun))
             else:
@@ -44,7 +45,7 @@ class LstFilesOfSubrunService:
     def update_files_of_subrun(self, id_file_subrun, subrun_number=None, path_file=None, num_events=None,
                                array_num_files=None):
         try:
-            files_before: FilesOfSubrunDto = self.__files_by_id(id_file_subrun)
+            files_before: FilesOfSubrunDto = self.get_file_subrun_by_id(id_file_subrun)
             if Checkers.validate_int(id_file_subrun,
                                      LstFilesOfSubrun.id_file_subrun.name) and files_before.id_file_subrun is not None:
                 self.__session.query(LstFilesOfSubrun).filter(LstFilesOfSubrun.id_file_subrun.like(id_file_subrun)) \
@@ -59,7 +60,7 @@ class LstFilesOfSubrunService:
                     synchronize_session=False
                 )
                 self.__session.commit()
-                files_after: FilesOfSubrunDto = self.__files_by_id(id_file_subrun)
+                files_after: FilesOfSubrunDto = self.get_file_subrun_by_id(id_file_subrun)
                 if files_before.__dict__ != files_after.__dict__:
                     print("RECORD UPDATE IN TABLE '{}' WITH ID '{}'".format(LstFilesOfSubrun.__tablename__.name,
                                                                             id_file_subrun))
@@ -75,13 +76,13 @@ class LstFilesOfSubrunService:
 
     def delete_files_of_subrun(self, id_file_subrun):
         try:
-            files_before: FilesOfSubrunDto = self.__files_by_id(id_file_subrun)
+            files_before: FilesOfSubrunDto = self.get_file_subrun_by_id(id_file_subrun)
             if Checkers.validate_int(id_file_subrun,
                                      LstFilesOfSubrun.id_file_subrun.name) and files_before.id_file_subrun is not None:
                 self.__session.query(LstFilesOfSubrun).filter(LstFilesOfSubrun.id_file_subrun.like(id_file_subrun)) \
                     .delete(synchronize_session=False)
                 self.__session.commit()
-                files_after: FilesOfSubrunDto = self.__files_by_id(id_file_subrun)
+                files_after: FilesOfSubrunDto = self.get_file_subrun_by_id(id_file_subrun)
                 if files_before.id_file_subrun is not None and files_after.id_file_subrun is None:
                     print("RECORD DELETE IN TABLE '{}' WITH ID '{}'".format(LstFilesOfSubrun.__tablename__.name,
                                                                             id_file_subrun))

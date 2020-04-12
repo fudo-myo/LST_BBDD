@@ -37,6 +37,7 @@ class LstR1DataCheckGenericService:
             self.__session.add(r1_data_check_generic_aux)
             self.__session.commit()
             if r1_data_check_generic_aux.id_r1_data_check_generic is not None:
+                r1_data_check_generic_insert.id_r1_data_check_generic = r1_data_check_generic_aux.id_r1_data_check_generic
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckGeneric.__tablename__.name,
                                                                           r1_data_check_generic_aux.id_r1_data_check_generic))
             else:

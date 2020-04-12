@@ -36,8 +36,10 @@ class LstAnalysisEvaluationTests(unittest.TestCase):
         value = self.test_insert_analysis_evaluation()
         analysis_service = LstAnalysisEvaluationService()
         analysis_dto_before: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
+        self.assertIsNotNone(analysis_dto_before.id_analysis_evaluation)
         analysis_service.update_analysis_eval(analysis_dto_before.id_analysis_evaluation, 33, "update", 8.90)
         analysis_dto_after: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
+        self.assertIsNotNone(analysis_dto_after.id_analysis_evaluation)
         self.assertNotEqual(analysis_dto_before.id_lst_r1_data_check_plot, analysis_dto_after.id_lst_r1_data_check_plot,
                             TestUtils.assert_update_message(LstAnalysisEvaluation.id_lst_r1_data_check_plot.name))
         self.assertNotEqual(analysis_dto_before.parameter_description, analysis_dto_after.parameter_description,
@@ -50,10 +52,11 @@ class LstAnalysisEvaluationTests(unittest.TestCase):
         value = self.test_insert_analysis_evaluation()
         analysis_service = LstAnalysisEvaluationService()
         analysis_dto_before: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
+        self.assertIsNotNone(analysis_dto_before.id_analysis_evaluation)
         analysis_service.delete_analysis_eval(analysis_dto_before.id_analysis_evaluation)
         analysis_dto_after: AnalysisEvaluationDto = analysis_service.get_analysis_by_id(value)
         self.assertIsNone(analysis_dto_after.id_analysis_evaluation,
-                          TestUtils.assert_delete_message(analysis_dto_before.id_analysis_evaluation,
+                          TestUtils.assert_delete_message(analysis_dto_after.id_analysis_evaluation,
                                                           LstTableNames.LST_ANALYSIS_EVALUATION))
         TestUtils.print_delete_trace(LstTableNames.LST_ANALYSIS_EVALUATION, analysis_dto_before.id_analysis_evaluation)
 

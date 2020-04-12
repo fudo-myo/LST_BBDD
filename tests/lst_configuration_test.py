@@ -35,9 +35,11 @@ class LstConfigurationTests(unittest.TestCase):
         value = self.test_insert_configuration()
         configuration_service = LstConfigurationService()
         config_dto_before: ConfigurationDto = configuration_service.get_config_by_id(value)
+        self.assertIsNotNone(config_dto_before.id_config)
         configuration_service.update_config(config_dto_before.id_config, "TU config desc", "TU config P1",
                                             "TU config P2", "TU config P3")
         config_dto_after: ConfigurationDto = configuration_service.get_config_by_id(value)
+        self.assertIsNotNone(config_dto_after.id_config)
         self.assertNotEqual(config_dto_before.config_description, config_dto_after.config_description,
                             TestUtils.assert_update_message(LstConfiguration.config_description.name))
         self.assertNotEqual(config_dto_before.param_1, config_dto_after.param_1,
@@ -52,10 +54,12 @@ class LstConfigurationTests(unittest.TestCase):
         value = self.test_insert_configuration()
         configuration_service = LstConfigurationService()
         config_dto_before: ConfigurationDto = configuration_service.get_config_by_id(value)
+        self.assertIsNotNone(config_dto_before.id_config)
         configuration_service.delete_by_id(config_dto_before.id_config)
         config_dto_after: ConfigurationDto = configuration_service.get_config_by_id(value)
         self.assertIsNone(config_dto_after.id_config,
                           TestUtils.assert_delete_message(config_dto_after.id_config, LstTableNames.LST_CONFIGURATION))
+        TestUtils.print_delete_trace(LstTableNames.LST_CONFIGURATION, config_dto_before.id_config)
 
     def test_get_all_configuration(self):
         for _ in range(5):

@@ -25,11 +25,12 @@ class LstR1DataCheckAnalysisService:
             r1_data_check_anaylis_aux = LstR1DataCheckAnalysis(
                 id_r1_data_check=r1_data_check_anaylis_insert.id_r1_data_check,
                 run_number=r1_data_check_anaylis_insert.run_number,
-                id_r1_data_check_especific=r1_data_check_anaylis_insert.id_r1_data_check_especific
+                id_r1_data_check_specific=r1_data_check_anaylis_insert.id_r1_data_check_specific
             )
             self.__session.add(r1_data_check_anaylis_aux)
             self.__session.commit()
             if r1_data_check_anaylis_aux.id_record is not None:
+                r1_data_check_anaylis_insert.id_record = r1_data_check_anaylis_aux.id_record
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckAnalysis.__tablename__.name,
                                                                           r1_data_check_anaylis_aux.id_r1_data_check))
             else:
@@ -41,14 +42,18 @@ class LstR1DataCheckAnalysisService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def update_r1_data_check_analysis(self, id_r1_data_check_to_search, id_r1_data_check_to_update=None,
+    def update_r1_data_check_analysis(self, id_record, id_r1_data_check_to_search, id_r1_data_check_to_update=None,
                                       run_number=None, id_r1_data_check_specific=None):
         try:
-            r1_before: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_r1_data_check_to_search)
-            if Checkers.validate_int(id_r1_data_check_to_search,
-                                     LstR1DataCheckAnalysis.id_r1_data_check.name) and r1_before.id_r1_data_check is not None:
+            r1_before: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_record,
+                                                                                      id_r1_data_check_to_search)
+            if Checkers.validate_int(id_r1_data_check_to_search, LstR1DataCheckAnalysis.id_r1_data_check.name) and \
+                    Checkers.validate_int(id_record, LstR1DataCheckAnalysis.id_record.name) and \
+                    r1_before.id_record is not None and \
+                    r1_before.id_r1_data_check is not None:
                 self.__session.query(LstR1DataCheckAnalysis) \
-                    .filter(LstR1DataCheckAnalysis.id_r1_data_check.like(id_r1_data_check_to_search)) \
+                    .filter(LstR1DataCheckAnalysis.id_r1_data_check.like(r1_before.id_r1_data_check),
+                            LstR1DataCheckAnalysis.id_record.like(r1_before.id_record)) \
                     .update({
                     LstR1DataCheckAnalysis.id_r1_data_check: Checkers.check_field_not_null(
                         LstR1DataCheckAnalysis.id_r1_data_check, id_r1_data_check_to_update),
@@ -61,7 +66,10 @@ class LstR1DataCheckAnalysisService:
                     synchronize_session=False
                 )
                 self.__session.commit()
-                r1_after: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_r1_data_check_to_search)
+                r1_after: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_record,
+                                                                                         Checkers.check_field_not_null(
+                                                                                             r1_before.id_r1_data_check,
+                                                                                             id_r1_data_check_to_update))
                 if r1_before.__dict__ != r1_after.__dict__:
                     print("RECORD UPDATE IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckAnalysis.__tablename__.name,
                                                                             id_r1_data_check_to_search))
@@ -78,17 +86,22 @@ class LstR1DataCheckAnalysisService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def delete_r1_data_check_analysis(self, id_r1_data_check):
+    def delete_r1_data_check_analysis(self, id_record, id_r1_data_check):
         try:
-            r1_before: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_r1_data_check)
-            if Checkers.validate_int(id_r1_data_check,
-                                     LstR1DataCheckAnalysis.id_r1_data_check.name) and r1_before.id_r1_data_check is not None:
+            r1_before: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_record, id_r1_data_check)
+            if Checkers.validate_int(id_r1_data_check, LstR1DataCheckAnalysis.id_r1_data_check.name) and \
+                    Checkers.validate_int(id_record, LstR1DataCheckAnalysis.id_record.name) and \
+                    r1_before.id_record is not None and \
+                    r1_before.id_r1_data_check is not None:
                 self.__session.query(LstR1DataCheckAnalysis).filter(
                     LstR1DataCheckAnalysis.id_r1_data_check.like(id_r1_data_check)) \
                     .delete(synchronize_session=False)
                 self.__session.commit()
-                r1_after: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_r1_data_check)
-                if r1_before.id_r1_data_check is not None and r1_after.id_r1_data_check is None:
+                r1_after: R1DataCheckAnalysisDto = self.get_r1_data_check_analysis_by_id(id_record, id_r1_data_check)
+                if r1_before.id_r1_data_check is not None and \
+                        r1_before.id_record is not None and \
+                        r1_after.id_record is None and \
+                        r1_after.id_r1_data_check is None:
                     print("RECORD DELETE IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckAnalysis.__tablename__.name,
                                                                             id_r1_data_check))
                 else:
@@ -127,10 +140,11 @@ class LstR1DataCheckAnalysisService:
 
         return r1_data_check_analysis_dto_list
 
-    def get_r1_data_check_analysis_by_id(self, id_r1_data_check):
+    def get_r1_data_check_analysis_by_id(self, id_record, id_r1_data_check):
         try:
             self.__r1_data_check_analysis_by_id: R1DataCheckAnalysisDto = self.__session.query(
-                LstR1DataCheckAnalysis).filter(LstR1DataCheckAnalysis.id_r1_data_check.like(id_r1_data_check)).first()
+                LstR1DataCheckAnalysis).filter(LstR1DataCheckAnalysis.id_r1_data_check.like(id_r1_data_check),
+                                               LstR1DataCheckAnalysis.id_record.like(id_record)).first()
             if self.__r1_data_check_analysis_by_id is not None:
                 return create_r1_data_check_analysis(
                     self.__r1_data_check_analysis_by_id.id_record,

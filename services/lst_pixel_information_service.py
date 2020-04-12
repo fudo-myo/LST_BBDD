@@ -32,6 +32,7 @@ class LstPixelInformationService:
             self.__session.add(pixel_info_aux)
             self.__session.commit()
             if pixel_info_aux.id_record is not None:
+                pixel_info_insert.id_record = pixel_info_aux.id_record
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstPixelInformation.__tablename__.name,
                                                                           pixel_info_aux.pixel_id))
             else:
@@ -42,24 +43,27 @@ class LstPixelInformationService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def update_pixel_info(self, pixel_id_to_search, pixel_group_number_to_search, pixel_id_to_update=None,
+    def update_pixel_info(self, id_record, pixel_id_to_search, pixel_group_number_to_search, pixel_id_to_update=None,
                           pixel_group_number_to_update=None, pixel_pos_x=None, pixel_pos_y=None,
                           pixel_pos_z=None):
         try:
-            pixel_info_before: PixelInformationDto = self.get_pixel_info_by_id(pixel_id_to_search,
+            pixel_info_before: PixelInformationDto = self.get_pixel_info_by_id(id_record, pixel_id_to_search,
                                                                                pixel_group_number_to_search)
-            if Checkers.validate_int(pixel_id_to_search, LstPixelInformation.pixel_id.name) and Checkers.validate_int(
-                    pixel_group_number_to_search,
-                    LstPixelInformation.pixel_group_number.name) and pixel_info_before.pixel_id is not None and pixel_info_before.pixel_group_number is not None:
+            if Checkers.validate_int(pixel_id_to_search, LstPixelInformation.pixel_id.name) and \
+                    Checkers.validate_int(pixel_group_number_to_search, LstPixelInformation.pixel_group_number.name) and \
+                    Checkers.validate_int(id_record, LstPixelInformation.id_record.name) and \
+                    pixel_info_before.id_record is not None and \
+                    pixel_info_before.pixel_id is not None and \
+                    pixel_info_before.pixel_group_number is not None:
 
                 self.__session.query(LstPixelInformation).filter(LstPixelInformation.pixel_id.like(pixel_id_to_search),
                                                                  LstPixelInformation.pixel_group_number.like(
                                                                      pixel_group_number_to_search)) \
                     .update({
-                    LstPixelInformation.pixel_id_to_update: Checkers.check_field_not_null(
-                        LstPixelInformation.pixel_id_to_update, pixel_id_to_update),
-                    LstPixelInformation.pixel_group_number_to_update: Checkers.check_field_not_null(
-                        LstPixelInformation.pixel_group_number_to_update, pixel_group_number_to_update),
+                    LstPixelInformation.pixel_id: Checkers.check_field_not_null(
+                        LstPixelInformation.pixel_id, pixel_id_to_update),
+                    LstPixelInformation.pixel_group_number: Checkers.check_field_not_null(
+                        LstPixelInformation.pixel_group_number, pixel_group_number_to_update),
                     LstPixelInformation.pixel_pos_x: Checkers.check_field_not_null(LstPixelInformation.pixel_pos_x,
                                                                                    pixel_pos_x),
                     LstPixelInformation.pixel_pos_y: Checkers.check_field_not_null(LstPixelInformation.pixel_pos_y,
@@ -70,8 +74,13 @@ class LstPixelInformationService:
                     synchronize_session=False
                 )
                 self.__session.commit()
-                pixel_info_after: PixelInformationDto = self.get_pixel_info_by_id(pixel_id_to_search,
-                                                                                  pixel_group_number_to_search)
+                pixel_info_after: PixelInformationDto = self.get_pixel_info_by_id(id_record,
+                                                                                  Checkers.check_field_not_null(
+                                                                                      pixel_info_before.pixel_id,
+                                                                                      pixel_id_to_update),
+                                                                                  Checkers.check_field_not_null(
+                                                                                      pixel_info_before.pixel_group_number,
+                                                                                      pixel_group_number_to_update))
                 if pixel_info_before.__dict__ != pixel_info_after.__dict__:
                     print(
                         "RECORD UPDATE IN TABLE '{}' WITH PIXEL_ID '{}'".format(LstPixelInformation.__tablename__.name,
@@ -88,21 +97,29 @@ class LstPixelInformationService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def delete_pixel_info(self, pixel_id, pixel_group_number):
+    def delete_pixel_info(self, id_record, pixel_id, pixel_group_number):
         try:
-            pixel_info_before: PixelInformationDto = self.get_pixel_info_by_id(pixel_id,
+            pixel_info_before: PixelInformationDto = self.get_pixel_info_by_id(id_record, pixel_id,
                                                                                pixel_group_number)
-            if Checkers.validate_int(pixel_id, LstPixelInformation.pixel_id.name) and Checkers.validate_int(
-                    pixel_group_number,
-                    LstPixelInformation.pixel_group_number.name) and pixel_info_before.pixel_id is not None and pixel_info_before.pixel_group_number is not None:
+            if Checkers.validate_int(pixel_id, LstPixelInformation.pixel_id.name) and \
+                    Checkers.validate_int(pixel_group_number, LstPixelInformation.pixel_group_number.name) and \
+                    Checkers.validate_int(id_record, LstPixelInformation.id_record.name) and \
+                    pixel_info_before.id_record is not None and \
+                    pixel_info_before.pixel_id is not None and \
+                    pixel_info_before.pixel_group_number is not None:
                 self.__session.query(LstPixelInformation).filter(LstPixelInformation.pixel_id.like(pixel_id),
                                                                  LstPixelInformation.pixel_group_number.like(
                                                                      pixel_group_number)) \
                     .delete(synchronize_session=False)
                 self.__session.commit()
-                pixel_info_after: PixelInformationDto = self.get_pixel_info_by_id(pixel_id,
+                pixel_info_after: PixelInformationDto = self.get_pixel_info_by_id(id_record, pixel_id,
                                                                                   pixel_group_number)
-                if pixel_info_before.id_record is not None and pixel_info_after.id_record is None:
+                if pixel_info_before.id_record is not None and \
+                        pixel_info_before.pixel_id is not None and \
+                        pixel_info_before.pixel_group_number is not None and \
+                        pixel_info_after.pixel_id is None and \
+                        pixel_info_after.pixel_group_number is None and \
+                        pixel_info_after.id_record is None:
                     print("RECORD DELETE IN TABLE '{}' WITH ID '{}'".format(LstPixelInformation.__tablename__.name,
                                                                             pixel_id))
                 else:
@@ -142,9 +159,10 @@ class LstPixelInformationService:
 
         return pixel_info_dto_list
 
-    def get_pixel_info_by_id(self, pixel_id, pixel_group_number):
+    def get_pixel_info_by_id(self, id_record, pixel_id, pixel_group_number):
         try:
             self.__pixel_info_by_id: PixelInformationDto = self.__session.query(LstPixelInformation).filter(
+                LstPixelInformation.id_record.like(id_record),
                 LstPixelInformation.pixel_id.like(pixel_id),
                 LstPixelInformation.pixel_group_number.like(pixel_group_number)).first()
             if self.__pixel_info_by_id is not None:
