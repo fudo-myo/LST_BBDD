@@ -28,6 +28,7 @@ class LstRunTypeService:
             self.__session.add(run_type_aux)
             self.__session.commit()
             if run_type_aux.id_run_type is not None:
+                run_type_insert.id_run_type = run_type_aux.id_run_type
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstRunType.__tablename__.name,
                                                                           run_type_aux.id_run_type))
             else:
