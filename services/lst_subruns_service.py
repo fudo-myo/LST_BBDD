@@ -30,6 +30,7 @@ class LstSubrunsService:
             self.__session.add(subruns_aux)
             self.__session.commit()
             if subruns_aux.id_subrun is not None:
+                subruns_insert.id_subrun = subruns_aux.id_subrun
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstSubruns.__tablename__.name,
                                                                           subruns_aux.id_subrun))
             else:
@@ -43,8 +44,11 @@ class LstSubrunsService:
     def update_subruns(self, id_subrun, subrun_number_to_search, subrun_number_to_update=None, run_number=None,
                        id_run_type=None):
         try:
-            subruns_before: SubrunsDto = self.get_subrun_by_id(id_subrun)
-            if Checkers.validate_int(id_subrun, LstSubruns.id_subrun.name) and subruns_before.id_subrun is not None:
+            subruns_before: SubrunsDto = self.get_subrun_by_id(id_subrun, subrun_number_to_search)
+            if Checkers.validate_int(id_subrun, LstSubruns.id_subrun.name) and \
+                    Checkers.validate_int(subrun_number_to_search, LstSubruns.subrun_number.name) and \
+                    subruns_before.subrun_number is not None and \
+                    subruns_before.id_subrun is not None:
                 self.__session.query(LstSubruns).filter(LstSubruns.id_subrun.like(id_subrun)) \
                     .filter(LstSubruns.subrun_number.like(subrun_number_to_search)) \
                     .update({
@@ -56,7 +60,10 @@ class LstSubrunsService:
                     synchronize_session=False
                 )
                 self.__session.commit()
-                subruns_after: SubrunsDto = self.get_subrun_by_id(id_subrun)
+                subruns_after: SubrunsDto = self.get_subrun_by_id(id_subrun,
+                                                                  Checkers.check_field_not_null(
+                                                                      subruns_before.subrun_number,
+                                                                      subrun_number_to_update))
                 if subruns_before.__dict__ != subruns_after.__dict__:
                     print("RECORD UPDATE IN TABLE '{}' WITH ID '{}'".format(LstSubruns.__tablename__.name,
                                                                             id_subrun))
@@ -70,15 +77,18 @@ class LstSubrunsService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def delete_subruns(self, id_subrun):
+    def delete_subruns(self, id_subrun, subrun_number):
         try:
-            subruns_before: SubrunsDto = self.get_subrun_by_id(id_subrun)
+            subruns_before: SubrunsDto = self.get_subrun_by_id(id_subrun, subrun_number)
             if Checkers.validate_int(id_subrun, LstSubruns.id_subrun.name) and subruns_before.id_subrun is not None:
                 self.__session.query(LstSubruns).filter(LstSubruns.id_subrun.like(id_subrun)) \
                     .delete(synchronize_session=False)
                 self.__session.commit()
-                subruns_after: SubrunsDto = self.get_subrun_by_id(id_subrun)
-                if subruns_before.id_subrun is not None and subruns_after.id_subrun is None:
+                subruns_after: SubrunsDto = self.get_subrun_by_id(id_subrun, subrun_number)
+                if subruns_before.id_subrun is not None and \
+                        subruns_before.subrun_number is not None and \
+                        subruns_after.subrun_number is None and \
+                        subruns_after.id_subrun is None:
                     print("RECORD DELETE IN TABLE '{}' WITH ID '{}'".format(LstSubruns.__tablename__.name,
                                                                             id_subrun))
                 else:
@@ -116,10 +126,11 @@ class LstSubrunsService:
 
         return subruns_dto_list
 
-    def get_subrun_by_id(self, id_subrun):
+    def get_subrun_by_id(self, id_subrun, subrun_number):
         try:
             self.__subruns_by_id: SubrunsDto = self.__session.query(LstSubruns).filter(
-                LstSubruns.id_subrun.like(id_subrun)).first()
+                LstSubruns.id_subrun.like(id_subrun),
+                LstSubruns.subrun_number.like(subrun_number)).first()
             if self.__subruns_by_id is not None:
                 return create_subrun(
                     self.__subruns_by_id.id_subrun,
