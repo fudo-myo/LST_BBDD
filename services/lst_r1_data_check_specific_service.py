@@ -37,6 +37,7 @@ class LstR1DataCheckSpecificService:
             self.__session.add(r1_data_check_specific_aux)
             self.__session.commit()
             if r1_data_check_specific_aux.id_r1_data_check_specific is not None:
+                r1_data_check_specific_insert.id_r1_data_check_specific = r1_data_check_specific_aux.id_r1_data_check_specific
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstR1DataCheckSpecific.__tablename__.name,
                                                                           r1_data_check_specific_aux))
             else:
