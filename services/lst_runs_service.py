@@ -43,6 +43,7 @@ class LstRunsService:
             self.__session.add(runs_aux)
             self.__session.commit()
             if runs_aux.id_run is not None:
+                runs_insert.id_run = runs_aux.id_run
                 print("RECORD INSERTED IN TABLE '{}' WITH ID '{}'".format(LstRuns.__tablename__.name,
                                                                           runs_aux.id_run))
             else:
