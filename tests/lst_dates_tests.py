@@ -33,12 +33,12 @@ class LstDatesTests(unittest.TestCase):
     def test_update_dates(self):
         id_date, date_time = self.test_insert_dates()
         dates_service = LstDatesService()
-        dates_before: DatesDto = dates_service.get_date_by_id(id_date, date_time)
+        dates_before: DatesDto = dates_service.get_date_by_id(date_time, id_date)
         self.assertIsNotNone(dates_before.id_date)
         self.assertIsNotNone(dates_before.date_time)
         date_update = datetime.now() + timedelta(days=45)
         dates_service.update_dates(dates_before.id_date, dates_before.date_time, date_update)
-        dates_after: DatesDto = dates_service.get_date_by_id(id_date, date_update)
+        dates_after: DatesDto = dates_service.get_date_by_id(date_update, id_date)
         self.assertIsNotNone(dates_after.id_date)
         self.assertIsNotNone(dates_after.date_time)
         self.assertNotEqual(dates_before.date_time, dates_after.date_time,
@@ -49,11 +49,11 @@ class LstDatesTests(unittest.TestCase):
     def test_delete_dates(self):
         id_date, date_time = self.test_insert_dates()
         dates_service = LstDatesService()
-        dates_before: DatesDto = dates_service.get_date_by_id(id_date, date_time)
+        dates_before: DatesDto = dates_service.get_date_by_id(date_time, id_date)
         self.assertIsNotNone(dates_before.id_date)
         self.assertIsNotNone(dates_before.date_time)
         dates_service.delete_date(id_date, date_time)
-        dates_after: DatesDto = dates_service.get_date_by_id(id_date, date_time)
+        dates_after: DatesDto = dates_service.get_date_by_id(date_time, id_date)
         self.assertIsNone(dates_after.id_date)
         self.assertIsNone(dates_after.date_time, TestUtils.assert_delete_message(
             str(id_date) + ", " + str(date_time), LstTableNames.LST_DATES))
@@ -71,7 +71,7 @@ class LstDatesTests(unittest.TestCase):
     def test_get_by_id_dates(self):
         id_date, date_time = self.test_insert_dates()
         dates_service = LstDatesService()
-        dates_dto: DatesDto = dates_service.get_date_by_id(id_date, date_time)
+        dates_dto: DatesDto = dates_service.get_date_by_id(date_time, id_date)
         self.assertIsNotNone(dates_dto.id_date)
         self.assertIsNotNone(dates_dto.date_time, TestUtils.assert_get_by_id_message(LstTableNames.LST_DATES, str(
             id_date) + ", " + date_time.strftime("%m/%d/%Y, %H:%M:%S")))

@@ -48,6 +48,8 @@ class ConfigurationDto:
         self.__id_config = value
 
 
+
+
 def create_configuration(id_config, config_description, param_1, param_2, param_3):
     dto = ConfigurationDto()
     dto.id_config = id_config
