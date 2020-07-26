@@ -39,7 +39,7 @@ class LstDatesService:
 
     def update_dates(self, id_date, date_to_search, date_to_update=None):
         try:
-            date_before: DatesDto = self.get_date_by_id(id_date, date_to_search)
+            date_before: DatesDto = self.get_date_by_id(date_to_search, id_date)
             if Checkers.validate_int(id_date, LstDates.id_date.name) and \
                     Checkers.validate_datetime(date_to_search, LstDates.date_time.name) and \
                     date_before.id_date is not None and \
@@ -51,8 +51,8 @@ class LstDatesService:
                     synchronize_session=False
                 )
                 self.__session.commit()
-                date_after: DatesDto = self.get_date_by_id(id_date, Checkers.check_field_not_null(date_before.date_time,
-                                                                                                  date_to_update))
+                date_after: DatesDto = self.get_date_by_id(Checkers.check_field_not_null(date_before.date_time,
+                                                                                                  date_to_update), id_date)
                 if date_before.__dict__ != date_after.__dict__:
                     print("RECORD UPDATE IN TABLE '{}' WITH ID '{}'".format(LstDates.__tablename__.name,
                                                                             id_date))
@@ -68,7 +68,7 @@ class LstDatesService:
 
     def delete_date(self, id_date, date_to_delete):
         try:
-            date_before: DatesDto = self.get_date_by_id(id_date, date_to_delete)
+            date_before: DatesDto = self.get_date_by_id(date_to_delete, id_date)
             if Checkers.validate_int(id_date, LstDates.id_date.name) and \
                     Checkers.validate_datetime(date_to_delete, LstDates.date_time.name) and \
                     date_before.id_date is not None and \
@@ -77,7 +77,7 @@ class LstDatesService:
                                                       LstDates.id_date.like(id_date)) \
                     .delete(synchronize_session=False)
                 self.__session.commit()
-                date_after: DatesDto = self.get_date_by_id(id_date, date_to_delete)
+                date_after: DatesDto = self.get_date_by_id(date_to_delete, id_date)
                 if date_before.id_date is not None and \
                         date_before.date_time is not None and \
                         date_after.date_time is None and \
@@ -117,11 +117,15 @@ class LstDatesService:
 
         return dates_dto_list
 
-    def get_date_by_id(self, id_date, date_time):
+    def get_date_by_id(self, date_time, id_date=None ):
         try:
-            self.__date_by_id: DatesDto = self.__session.query(LstDates).filter(
-                LstDates.id_date.like(id_date),
-                LstDates.date_time.like(date_time)).first()
+            if id_date is not None:
+                self.__date_by_id: DatesDto = self.__session.query(LstDates).filter(
+                    LstDates.id_date.like(id_date),
+                    LstDates.date_time.like(date_time)).first()
+            else:
+                self.__date_by_id: DatesDto = self.__session.query(LstDates).filter(
+                    LstDates.date_time.like(date_time)).first()
             if self.__date_by_id is not None:
                 return create_date(
                     self.__date_by_id.id_date,

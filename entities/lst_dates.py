@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import *
 
 from config.base import getBase, getMetaData, getEngine

@@ -12,7 +12,7 @@ if os.getenv("TEST_PROFILE") == "test_mode":
     engine = create_engine('mysql://franrome:g.4lan_SB]IpRVYs@muon.gae.ucm.es:3306/DataBase_LST_1_franrome_test', echo=True)
 else:
     engine = create_engine('mysql://franrome:g.4lan_SB]IpRVYs@muon.gae.ucm.es:3306/DataBase_LST_1_franrome', echo=True)
-    # engine = create_engine('mysql://root:LST1-bigtelescope@muon.gae.ucm.es:3306/DataBase_LST_1_franrome', echo=True)
+    # engine = create_engine('mysql://root:LST1-bigtelescranrome:g.4lan_SB]IpRope@muon.gae.ucm.es:3306/DataBase_LST_1_franrome', echo=True)
 
 try:
     conn = engine.connect()
