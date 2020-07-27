@@ -29,6 +29,12 @@ class LstRunsTests(unittest.TestCase):
         runs_dto.id_run_type = 1
         runs_dto.date = datetime.now()
         runs_dto.id_config = 1
+        runs_dto.number_of_subrun = 1
+        runs_dto.events = 1
+        runs_dto.length = 1.5
+        runs_dto.rate = 1.5
+        runs_dto.size = "15MB"
+        runs_dto.event_type = "M= 82% P= 18%"
         runs_dto.id_production = 1
         runs_dto.path_file = "TI path insert"
         runs_dto.init_ra = 2.25
@@ -51,9 +57,9 @@ class LstRunsTests(unittest.TestCase):
         runs_service = LstRunsService()
         runs_before: RunsDto = runs_service.get_runs_by_id(value)
         self.assertIsNotNone(runs_before.id_run)
-        runs_service.update_runs(runs_before.id_run, 2, 2, datetime.now() + timedelta(days=10), 2, 2, "TU path update",
-                                 2.22, 3.33, 4.44, 5.55, 6.66, 7.77, 8.88, 9.99, datetime.now() + timedelta(days=30),
-                                 datetime.now() + timedelta(days=40))
+        runs_service.update_runs(runs_before.id_run, 2, 2, datetime.now() + timedelta(days=10), 2, 2, 2, 2.5, 2.5,
+                                 "3GB", "P=100%", 2, "TU path update", 2.22, 3.33, 4.44, 5.55, 6.66, 7.77, 8.88, 9.99,
+                                 datetime.now() + timedelta(days=30), datetime.now() + timedelta(days=40))
         runs_after: RunsDto = runs_service.get_runs_by_id(value)
         self.assertIsNotNone(runs_after.id_run)
         self.assertNotEqual(runs_before.run_number, runs_after.run_number,
@@ -63,6 +69,18 @@ class LstRunsTests(unittest.TestCase):
         self.assertNotEqual(runs_before.date, runs_after.date, TestUtils.assert_update_message(LstRuns.date.name))
         self.assertNotEqual(runs_before.id_config, runs_after.id_config,
                             TestUtils.assert_update_message(LstRuns.id_config.name))
+        self.assertNotEqual(runs_before.number_of_subrun, runs_after.number_of_subrun,
+                            TestUtils.assert_update_message(LstRuns.number_of_subrun.name))
+        self.assertNotEqual(runs_before.events, runs_after.events,
+                            TestUtils.assert_update_message(LstRuns.events.name))
+        self.assertNotEqual(runs_before.length, runs_after.length,
+                            TestUtils.assert_update_message(LstRuns.length.name))
+        self.assertNotEqual(runs_before.rate, runs_after.rate,
+                            TestUtils.assert_update_message(LstRuns.rate.name))
+        self.assertNotEqual(runs_before.size, runs_after.size,
+                            TestUtils.assert_update_message(LstRuns.size.name))
+        self.assertNotEqual(runs_before.event_type, runs_after.event_type,
+                            TestUtils.assert_update_message(LstRuns.event_type.name))
         self.assertNotEqual(runs_before.id_production, runs_after.id_production,
                             TestUtils.assert_update_message(LstRuns.id_production.name))
         self.assertNotEqual(runs_before.path_file, runs_after.path_file,

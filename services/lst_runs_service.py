@@ -27,6 +27,12 @@ class LstRunsService:
                 id_run_type=runs_insert.id_run_type,
                 date=runs_insert.date,
                 id_config=runs_insert.id_config,
+                number_of_subrun=runs_insert.number_of_subrun,
+                events=runs_insert.events,
+                length=runs_insert.length,
+                rate=runs_insert.rate,
+                size=runs_insert.size,
+                event_type=runs_insert.event_type,
                 id_production=runs_insert.id_production,
                 path_file=runs_insert.path_file,
                 init_ra=runs_insert.init_ra,
@@ -54,11 +60,10 @@ class LstRunsService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def update_runs(self, id_run, run_number=None, id_run_type=None, date=None, id_config=None, id_production=None,
-                    path_file=None, init_ra=None, end_ra=None,
-                    init_dec=None, end_dec=None, init_altitude=None, end_altitude=None, init_azimuth=None,
-                    end_azimuth=None, init_time_collect_data=None,
-                    end_time_collect_data=None):
+    def update_runs(self, id_run, run_number=None, id_run_type=None, date=None, id_config=None, number_of_subrun=None,
+                    events=None, length=None, rate=None, size=None, event_type=None, id_production=None, path_file=None,
+                    init_ra=None, end_ra=None, init_dec=None, end_dec=None, init_altitude=None, end_altitude=None,
+                    init_azimuth=None, end_azimuth=None, init_time_collect_data=None, end_time_collect_data=None):
         try:
             runs_before: RunsDto = self.get_runs_by_id(id_run)
             if Checkers.validate_int(id_run, LstRuns.id_run.name) and runs_before.id_run is not None:
@@ -68,6 +73,12 @@ class LstRunsService:
                     LstRuns.id_run_type: Checkers.check_field_not_null(LstRuns.id_run_type, id_run_type),
                     LstRuns.date: Checkers.check_field_not_null(LstRuns.date, date),
                     LstRuns.id_config: Checkers.check_field_not_null(LstRuns.id_config, id_config),
+                    LstRuns.number_of_subrun: Checkers.check_field_not_null(LstRuns.number_of_subrun, number_of_subrun),
+                    LstRuns.events: Checkers.check_field_not_null(LstRuns.events, events),
+                    LstRuns.length: Checkers.check_field_not_null(LstRuns.length, length),
+                    LstRuns.rate: Checkers.check_field_not_null(LstRuns.rate, rate),
+                    LstRuns.size: Checkers.check_field_not_null(LstRuns.size, size),
+                    LstRuns.event_type: Checkers.check_field_not_null(LstRuns.event_type, event_type),
                     LstRuns.id_production: Checkers.check_field_not_null(LstRuns.id_production, id_production),
                     LstRuns.path_file: Checkers.check_field_not_null(LstRuns.path_file, path_file),
                     LstRuns.init_ra: Checkers.check_field_not_null(LstRuns.init_ra, init_ra),
@@ -136,6 +147,12 @@ class LstRunsService:
                         row.id_run_type,
                         row.date,
                         row.id_config,
+                        row.number_of_subrun,
+                        row.events,
+                        row.length,
+                        row.rate,
+                        row.size,
+                        row.event_type,
                         row.id_production,
                         row.path_file,
                         row.init_ra,
@@ -170,6 +187,12 @@ class LstRunsService:
                     self.__runs_by_id.id_run_type,
                     self.__runs_by_id.date,
                     self.__runs_by_id.id_config,
+                    self.__runs_by_id.number_of_subrun,
+                    self.__runs_by_id.events,
+                    self.__runs_by_id.length,
+                    self.__runs_by_id.rate,
+                    self.__runs_by_id.size,
+                    self.__runs_by_id.event_type,
                     self.__runs_by_id.id_production,
                     self.__runs_by_id.path_file,
                     self.__runs_by_id.init_ra,
@@ -186,8 +209,7 @@ class LstRunsService:
             else:
                 Checkers.print_object_filter_null(LstRuns.id_run.name, str(id_run))
                 return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                                   None,
-                                   None, None)
+                                   None, None, None, None, None, None, None, None, None)
 
         except (InvalidRequestError, NameError) as error_request:
             Checkers.print_exception_one_param(error_request)
@@ -195,4 +217,4 @@ class LstRunsService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
         return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                           None, None)
+                           None, None, None, None, None, None, None, None)
