@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import List
 
 from DTO.subruns_dto import SubrunsDto
@@ -26,6 +27,14 @@ class LstSubrunsTests(unittest.TestCase):
         subruns_dto.subrun_number = 1
         subruns_dto.run_number = 1
         subruns_dto.id_run_type = 1
+        subruns_dto.date = datetime.now()
+        subruns_dto.stream = "[0,1,2,3]"
+        subruns_dto.events = 1
+        subruns_dto.length = 1.5
+        subruns_dto.rate = 1.5
+        subruns_dto.size = "15MB"
+        subruns_dto.event_type = "M= 82% P= 18%"
+        subruns_dto.process_state = "R1 Ready"
         subruns_service.insert_subruns(subruns_dto)
         self.assertIsNotNone(subruns_dto.id_subrun, TestUtils.assert_insert_message(LstTableNames.LST_SUBRUNS))
         TestUtils.print_insert_trace(LstTableNames.LST_SUBRUNS, subruns_dto.id_subrun)
@@ -37,7 +46,9 @@ class LstSubrunsTests(unittest.TestCase):
         subruns_before: SubrunsDto = subruns_service.get_subrun_by_id(id_subrun, subrun_number)
         self.assertIsNotNone(subruns_before.id_subrun)
         self.assertIsNotNone(subruns_before.subrun_number)
-        subruns_service.update_subruns(subruns_before.id_subrun, subruns_before.subrun_number, 2, 2, 2)
+        subruns_service.update_subruns(subruns_before.id_subrun, subruns_before.subrun_number, 2, 2, 2,
+                                       datetime.now() + timedelta(days=10), "[3,2,1,0]", 2, 2.5, 2.5, "3GB", "P=100%",
+                                       "R1 KO")
         subruns_after: SubrunsDto = subruns_service.get_subrun_by_id(id_subrun, 2)
         self.assertIsNotNone(subruns_after.id_subrun)
         self.assertIsNotNone(subruns_after.subrun_number)
@@ -47,6 +58,22 @@ class LstSubrunsTests(unittest.TestCase):
                             TestUtils.assert_update_message(LstSubruns.run_number.name))
         self.assertNotEqual(subruns_before.id_run_type, subruns_after.id_run_type,
                             TestUtils.assert_update_message(LstSubruns.id_run_type.name))
+        self.assertNotEqual(subruns_before.date, subruns_after.date,
+                            TestUtils.assert_update_message(LstSubruns.date.name))
+        self.assertNotEqual(subruns_before.stream, subruns_after.stream,
+                            TestUtils.assert_update_message(LstSubruns.stream.name))
+        self.assertNotEqual(subruns_before.events, subruns_after.events,
+                            TestUtils.assert_update_message(LstSubruns.events.name))
+        self.assertNotEqual(subruns_before.length, subruns_after.length,
+                            TestUtils.assert_update_message(LstSubruns.length.name))
+        self.assertNotEqual(subruns_before.rate, subruns_after.rate,
+                            TestUtils.assert_update_message(LstSubruns.rate.name))
+        self.assertNotEqual(subruns_before.size, subruns_after.size,
+                            TestUtils.assert_update_message(LstSubruns.size.name))
+        self.assertNotEqual(subruns_before.event_type, subruns_after.event_type,
+                            TestUtils.assert_update_message(LstSubruns.event_type.name))
+        self.assertNotEqual(subruns_before.process_state, subruns_after.process_state,
+                            TestUtils.assert_update_message(LstSubruns.process_state.name))
         TestUtils.print_update_trace(LstTableNames.LST_SUBRUNS,
                                      str(subruns_before.id_subrun) + ", " + str(subruns_before.subrun_number))
 

@@ -1,15 +1,20 @@
 class RunsDto:
 
-    def __init__(self, id_run=None, run_number=None, id_run_type=None, date=None, id_config=None, id_production=None,
-                 path_file=None, init_ra=None, end_ra=None,
-                 init_dec=None, end_dec=None, init_altitude=None, end_altitude=None, init_azimuth=None,
-                 end_azimuth=None, init_time_collect_data=None,
-                 end_time_collect_data=None):
+    def __init__(self, id_run=None, run_number=None, id_run_type=None, date=None, id_config=None, number_of_subrun=None,
+                 events=None, length=None, rate=None, size=None, event_type=None, id_production=None, path_file=None,
+                 init_ra=None, end_ra=None, init_dec=None, end_dec=None, init_altitude=None, end_altitude=None,
+                 init_azimuth=None, end_azimuth=None, init_time_collect_data=None, end_time_collect_data=None):
         self.__id_run = id_run
         self.__run_number = run_number
         self.__id_run_type = id_run_type
         self.__date = date
         self.__id_config = id_config
+        self.__number_of_subrun = number_of_subrun
+        self.__events = events
+        self.__length = length
+        self.__rate = rate
+        self.__size = size
+        self.__event_type = event_type
         self.__id_production = id_production
         self.__path_file = path_file
         self.__init_ra = init_ra
@@ -42,6 +47,30 @@ class RunsDto:
     @property
     def id_config(self):
         return self.__id_config
+
+    @property
+    def number_of_subrun(self):
+        return self.__number_of_subrun
+
+    @property
+    def events(self):
+        return self.__events
+
+    @property
+    def length(self):
+        return self.__length
+
+    @property
+    def rate(self):
+        return self.__rate
+
+    @property
+    def size(self):
+        return self.__size
+
+    @property
+    def event_type(self):
+        return self.__event_type
 
     @property
     def id_production(self):
@@ -111,6 +140,30 @@ class RunsDto:
     def id_config(self, value):
         self.__id_config = value
 
+    @number_of_subrun.setter
+    def number_of_subrun(self, value):
+        self.__number_of_subrun = value
+
+    @events.setter
+    def events(self, value):
+        self.__events = value
+
+    @length.setter
+    def length(self, value):
+        self.__length = value
+
+    @rate.setter
+    def rate(self, value):
+        self.__rate = value
+
+    @size.setter
+    def size(self, value):
+        self.__size = value
+
+    @event_type.setter
+    def event_type(self, value):
+        self.__event_type = value
+
     @id_production.setter
     def id_production(self, value):
         self.__id_production = value
@@ -160,15 +213,21 @@ class RunsDto:
         self.__end_time_collect_data = value
 
 
-def create_runs(id_run, run_number, id_run_type, date, id_config, id_production, path_file, init_ra, end_ra,
-                init_dec, end_dec, init_altitude, end_altitude, init_azimuth, end_azimuth, init_time_collect_data,
-                end_time_collect_data):
+def create_runs(id_run, run_number, id_run_type, date, id_config, number_of_subrun, events, length, rate, size,
+                event_type, id_production, path_file, init_ra, end_ra, init_dec, end_dec, init_altitude,
+                end_altitude, init_azimuth, end_azimuth, init_time_collect_data, end_time_collect_data):
     dto = RunsDto()
     dto.id_run = id_run
     dto.run_number = run_number
     dto.id_run_type = id_run_type
     dto.date = date
     dto.id_config = id_config
+    dto.number_of_subrun = number_of_subrun
+    dto.events = events
+    dto.length = length
+    dto.rate = rate
+    dto.size = size
+    dto.event_type = event_type
     dto.id_production = id_production
     dto.path_file = path_file
     dto.init_ra = init_ra
