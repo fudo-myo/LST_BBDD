@@ -19,6 +19,7 @@ class LstRunsService:
         self.__session: Session = getSession()
         self.__all_runs = None
         self.__runs_by_id = None
+        self.__runs_by_runnumber_date_runtype = None
 
     def insert_runs(self, runs_insert: RunsDto):
         try:
@@ -208,6 +209,52 @@ class LstRunsService:
                 )
             else:
                 Checkers.print_object_filter_null(LstRuns.id_run.name, str(id_run))
+                return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+                                   None, None, None, None, None, None, None, None, None)
+
+        except (InvalidRequestError, NameError) as error_request:
+            Checkers.print_exception_one_param(error_request)
+        except OperationalError as error_request2:
+            Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
+
+        return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+                           None, None, None, None, None, None, None, None)
+
+    def get_run_by_runnumber_date_runtype(self, run_number, date, id_run_type):
+        try:
+            self.__runs_by_runnumber_date_runtype: RunsDto = self.__session.query(LstRuns).filter(LstRuns.run_number.like(run_number)) \
+                .filter(LstRuns.date.like(date)) \
+                .filter(LstRuns.id_run_type(id_run_type)).first()
+            if self.__runs_by_runnumber_date_runtype is not None:
+                return create_runs(
+                    self.__runs_by_runnumber_date_runtype.id_run,
+                    self.__runs_by_runnumber_date_runtype.run_number,
+                    self.__runs_by_runnumber_date_runtype.id_run_type,
+                    self.__runs_by_runnumber_date_runtype.date,
+                    self.__runs_by_runnumber_date_runtype.id_config,
+                    self.__runs_by_runnumber_date_runtype.number_of_subrun,
+                    self.__runs_by_runnumber_date_runtype.events,
+                    self.__runs_by_runnumber_date_runtype.length,
+                    self.__runs_by_runnumber_date_runtype.rate,
+                    self.__runs_by_runnumber_date_runtype.size,
+                    self.__runs_by_runnumber_date_runtype.event_type,
+                    self.__runs_by_runnumber_date_runtype.id_production,
+                    self.__runs_by_runnumber_date_runtype.path_file,
+                    self.__runs_by_runnumber_date_runtype.init_ra,
+                    self.__runs_by_runnumber_date_runtype.end_ra,
+                    self.__runs_by_runnumber_date_runtype.init_dec,
+                    self.__runs_by_runnumber_date_runtype.end_dec,
+                    self.__runs_by_runnumber_date_runtype.init_altitude,
+                    self.__runs_by_runnumber_date_runtype.end_altitude,
+                    self.__runs_by_runnumber_date_runtype.init_azimuth,
+                    self.__runs_by_runnumber_date_runtype.end_azimuth,
+                    self.__runs_by_runnumber_date_runtype.init_time_collect_data,
+                    self.__runs_by_runnumber_date_runtype.end_time_collect_data
+                )
+            else:
+                Checkers.print_object_filter_null(LstRuns.run_number.name, str(run_number))
+                Checkers.print_object_filter_null(LstRuns.date.name, str(date))
+                Checkers.print_object_filter_null(LstRuns.id_run_type.name, str(id_run_type))
                 return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
                                    None, None, None, None, None, None, None, None, None)
 
