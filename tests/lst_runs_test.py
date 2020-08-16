@@ -1,7 +1,11 @@
+import time
 from typing import List
-
 from utils.test_config import *
-from datetime import datetime, timedelta
+
+from DTO.dates_dto import DatesDto
+from services.lst_dates_service import LstDatesService
+
+from datetime import datetime, timedelta, date
 
 from DTO.runs_dto import RunsDto
 from services.lst_runs_service import LstRunsService
@@ -23,11 +27,19 @@ class LstRunsTests(unittest.TestCase):
         TestUtils.print_test_finished(self._testMethodName)
 
     def test_insert_runs(self):
+        dates_service = LstDatesService()
+        dates_dto = DatesDto()
+        dates_dto.date_dto = date.today()
+        dates_service.insert_dates(dates_dto)
+        self.assertIsNotNone(dates_dto.id_date, TestUtils.assert_insert_message(LstTableNames.LST_DATES))
+        TestUtils.print_insert_trace(LstTableNames.LST_DATES, dates_dto.id_date)
         runs_service = LstRunsService()
         runs_dto = RunsDto()
         runs_dto.run_number = 1
         runs_dto.id_run_type = 1
-        runs_dto.date = datetime.now()
+        runs_dto.id_date = dates_dto.id_date
+        runs_dto.date = date.today()
+        runs_dto.hour = datetime.now().time()
         runs_dto.id_config = 1
         runs_dto.number_of_subrun = 1
         runs_dto.events = 1
@@ -50,14 +62,15 @@ class LstRunsTests(unittest.TestCase):
         runs_service.insert_runs(runs_dto)
         self.assertIsNotNone(runs_dto.id_run, TestUtils.assert_insert_message(LstTableNames.LST_RUNS))
         TestUtils.print_insert_trace(LstTableNames.LST_RUNS, runs_dto.id_run)
-        return runs_dto.id_run
+        return runs_dto.id_run, dates_dto.id_date
 
     def test_update_runs(self):
-        value = self.test_insert_runs()
+        value, id_date = self.test_insert_runs()
         runs_service = LstRunsService()
         runs_before: RunsDto = runs_service.get_runs_by_id(value)
         self.assertIsNotNone(runs_before.id_run)
-        runs_service.update_runs(runs_before.id_run, 2, 2, datetime.now() + timedelta(days=10), 2, 2, 2, 2.5, 2.5,
+        runs_service.update_runs(runs_before.id_run, 2, 2, id_date, date.today() + timedelta(days=10),
+                                 (datetime.now() + timedelta(hours=5)).time(), 2, 2, 2, 2.5, 2.5,
                                  "3GB", "P=100%", 2, "TU path update", 2.22, 3.33, 4.44, 5.55, 6.66, 7.77, 8.88, 9.99,
                                  datetime.now() + timedelta(days=30), datetime.now() + timedelta(days=40))
         runs_after: RunsDto = runs_service.get_runs_by_id(value)
@@ -107,7 +120,7 @@ class LstRunsTests(unittest.TestCase):
         TestUtils.print_update_trace(LstTableNames.LST_RUNS, runs_after.id_run)
 
     def test_delete_runs(self):
-        value = self.test_insert_runs()
+        value, id_date = self.test_insert_runs()
         runs_service = LstRunsService()
         runs_before: RunsDto = runs_service.get_runs_by_id(value)
         self.assertIsNotNone(runs_before.id_run)
@@ -125,7 +138,7 @@ class LstRunsTests(unittest.TestCase):
         TestUtils.print_get_all_trace(LstTableNames.LST_RUNS, len(runs_list))
 
     def test_get_by_id_runs(self):
-        value = self.test_insert_runs()
+        value, id_date = self.test_insert_runs()
         runs_service = LstRunsService()
         runs_dto: RunsDto = runs_service.get_runs_by_id(value)
         self.assertIsNotNone(runs_dto.id_run, TestUtils.assert_get_by_id_message(LstTableNames.LST_RUNS, value))

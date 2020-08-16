@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from sqlalchemy import *
+from sqlalchemy.orm import relationship, backref
 
 from config.base import getBase, getMetaData, getEngine
 from utils.checkers import Checkers
@@ -10,5 +11,6 @@ if Checkers.check_table_exists(getEngine(), LstTableNames.LST_DATES):
     class LstDates(getBase()):
         __tablename__ = Table(LstTableNames.LST_DATES, getMetaData(), autoload=True, autoload_with=getEngine())
 
-        id_date = Column('ID_DATE', INTEGER, primary_key=True,autoincrement=True, nullable=False)
+        id_date = Column('ID_DATE', INTEGER, primary_key=True, autoincrement=True, nullable=False)
         date_entity = Column('DATE', DATE, nullable=False)
+

@@ -1,6 +1,11 @@
+from typing import Tuple
+
 from sqlalchemy import *
+from sqlalchemy.orm import relationship
+from tables.filters import foreign_complibs
 
 from config.base import getBase, getMetaData, getEngine
+from entities.lst_dates import LstDates
 from utils.checkers import Checkers
 from utils.table_names import LstTableNames
 
@@ -10,7 +15,9 @@ if Checkers.check_table_exists(getEngine(), LstTableNames.LST_RUNS):
         id_run = Column('ID_RUN', INTEGER, primary_key=True, nullable=False)
         run_number = Column('RUN_NUMBER', INTEGER, nullable=False)
         id_run_type = Column('ID_RUN_TYPE', INTEGER, nullable=False)
-        date = Column('DATE', DateTime, nullable=False)
+        id_date = Column('ID_DATE', INTEGER, nullable=False)
+        date = Column('DATE', Date, nullable=True)
+        hour = Column('HOUR', Time, nullable=True)
         id_config = Column('ID_CONFIG', INTEGER, nullable=False)
         number_of_subrun = Column('NUMBER_OF_SUBRUN', INTEGER, nullable=True)
         events = Column('EVENTS', INTEGER, nullable=True)

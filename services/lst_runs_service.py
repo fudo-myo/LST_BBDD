@@ -26,7 +26,9 @@ class LstRunsService:
             runs_aux = LstRuns(
                 run_number=runs_insert.run_number,
                 id_run_type=runs_insert.id_run_type,
+                id_date=runs_insert.id_date,
                 date=runs_insert.date,
+                hour=runs_insert.hour,
                 id_config=runs_insert.id_config,
                 number_of_subrun=runs_insert.number_of_subrun,
                 events=runs_insert.events,
@@ -61,10 +63,11 @@ class LstRunsService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def update_runs(self, id_run, run_number=None, id_run_type=None, date=None, id_config=None, number_of_subrun=None,
-                    events=None, length=None, rate=None, size=None, event_type=None, id_production=None, path_file=None,
-                    init_ra=None, end_ra=None, init_dec=None, end_dec=None, init_altitude=None, end_altitude=None,
-                    init_azimuth=None, end_azimuth=None, init_time_collect_data=None, end_time_collect_data=None):
+    def update_runs(self, id_run, run_number=None, id_run_type=None, id_date=None, date=None, hour=None, id_config=None,
+                    number_of_subrun=None, events=None, length=None, rate=None, size=None, event_type=None,
+                    id_production=None, path_file=None, init_ra=None, end_ra=None, init_dec=None, end_dec=None,
+                    init_altitude=None, end_altitude=None, init_azimuth=None, end_azimuth=None,
+                    init_time_collect_data=None, end_time_collect_data=None):
         try:
             runs_before: RunsDto = self.get_runs_by_id(id_run)
             if Checkers.validate_int(id_run, LstRuns.id_run.name) and runs_before.id_run is not None:
@@ -72,7 +75,9 @@ class LstRunsService:
                     .update({
                     LstRuns.run_number: Checkers.check_field_not_null(LstRuns.run_number, run_number),
                     LstRuns.id_run_type: Checkers.check_field_not_null(LstRuns.id_run_type, id_run_type),
+                    LstRuns.id_date: Checkers.check_field_not_null(LstRuns.id_date, id_date),
                     LstRuns.date: Checkers.check_field_not_null(LstRuns.date, date),
+                    LstRuns.hour: Checkers.check_field_not_null(LstRuns.hour, hour),
                     LstRuns.id_config: Checkers.check_field_not_null(LstRuns.id_config, id_config),
                     LstRuns.number_of_subrun: Checkers.check_field_not_null(LstRuns.number_of_subrun, number_of_subrun),
                     LstRuns.events: Checkers.check_field_not_null(LstRuns.events, events),
@@ -146,7 +151,9 @@ class LstRunsService:
                         row.id_run,
                         row.run_number,
                         row.id_run_type,
+                        row.id_date,
                         row.date,
+                        row.hour,
                         row.id_config,
                         row.number_of_subrun,
                         row.events,
@@ -186,7 +193,9 @@ class LstRunsService:
                     self.__runs_by_id.id_run,
                     self.__runs_by_id.run_number,
                     self.__runs_by_id.id_run_type,
+                    self.__runs_by_id.id_date,
                     self.__runs_by_id.date,
+                    self.__runs_by_id.hour,
                     self.__runs_by_id.id_config,
                     self.__runs_by_id.number_of_subrun,
                     self.__runs_by_id.events,
@@ -210,7 +219,7 @@ class LstRunsService:
             else:
                 Checkers.print_object_filter_null(LstRuns.id_run.name, str(id_run))
                 return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                                   None, None, None, None, None, None, None, None, None)
+                                   None, None, None, None, None, None, None, None, None, None, None)
 
         except (InvalidRequestError, NameError) as error_request:
             Checkers.print_exception_one_param(error_request)
@@ -218,11 +227,12 @@ class LstRunsService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
         return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                           None, None, None, None, None, None, None, None)
+                           None, None, None, None, None, None, None, None, None, None)
 
     def get_run_by_runnumber_date_runtype(self, run_number, date, id_run_type):
         try:
-            self.__runs_by_runnumber_date_runtype: RunsDto = self.__session.query(LstRuns).filter(LstRuns.run_number.like(run_number)) \
+            self.__runs_by_runnumber_date_runtype: RunsDto = self.__session.query(LstRuns).filter(
+                LstRuns.run_number.like(run_number)) \
                 .filter(LstRuns.date.like(date)) \
                 .filter(LstRuns.id_run_type(id_run_type)).first()
             if self.__runs_by_runnumber_date_runtype is not None:
@@ -256,7 +266,7 @@ class LstRunsService:
                 Checkers.print_object_filter_null(LstRuns.date.name, str(date))
                 Checkers.print_object_filter_null(LstRuns.id_run_type.name, str(id_run_type))
                 return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                                   None, None, None, None, None, None, None, None, None)
+                                   None, None, None, None, None, None, None, None, None, None, None)
 
         except (InvalidRequestError, NameError) as error_request:
             Checkers.print_exception_one_param(error_request)
@@ -264,4 +274,4 @@ class LstRunsService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
         return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                           None, None, None, None, None, None, None, None)
+                           None, None, None, None, None, None, None, None, None, None)
