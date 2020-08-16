@@ -1,13 +1,17 @@
 class RunsDto:
 
-    def __init__(self, id_run=None, run_number=None, id_run_type=None, date=None, id_config=None, number_of_subrun=None,
-                 events=None, length=None, rate=None, size=None, event_type=None, id_production=None, path_file=None,
-                 init_ra=None, end_ra=None, init_dec=None, end_dec=None, init_altitude=None, end_altitude=None,
-                 init_azimuth=None, end_azimuth=None, init_time_collect_data=None, end_time_collect_data=None):
+    def __init__(self, id_run=None, run_number=None, id_run_type=None, id_date=None, date=None, hour=None,
+                 id_config=None, number_of_subrun=None, events=None, length=None, rate=None, size=None, event_type=None,
+                 id_production=None, path_file=None, init_ra=None, end_ra=None, init_dec=None, end_dec=None,
+                 init_altitude=None, end_altitude=None, init_azimuth=None, end_azimuth=None,
+                 init_time_collect_data=None,
+                 end_time_collect_data=None):
         self.__id_run = id_run
         self.__run_number = run_number
         self.__id_run_type = id_run_type
+        self.__id_date = id_date
         self.__date = date
+        self.__hour = hour
         self.__id_config = id_config
         self.__number_of_subrun = number_of_subrun
         self.__events = events
@@ -41,8 +45,16 @@ class RunsDto:
         return self.__id_run_type
 
     @property
+    def id_date(self):
+        return self.__id_date
+
+    @property
     def date(self):
         return self.__date
+
+    @property
+    def hour(self):
+        return self.__hour
 
     @property
     def id_config(self):
@@ -132,9 +144,17 @@ class RunsDto:
     def id_run_type(self, value):
         self.__id_run_type = value
 
+    @id_date.setter
+    def id_date(self, value):
+        self.__id_date = value
+
     @date.setter
     def date(self, value):
         self.__date = value
+
+    @hour.setter
+    def hour(self, value):
+        self.__hour = value
 
     @id_config.setter
     def id_config(self, value):
@@ -213,14 +233,16 @@ class RunsDto:
         self.__end_time_collect_data = value
 
 
-def create_runs(id_run, run_number, id_run_type, date, id_config, number_of_subrun, events, length, rate, size,
+def create_runs(id_run, run_number, id_run_type, id_date, date, hour, id_config, number_of_subrun, events, length, rate, size,
                 event_type, id_production, path_file, init_ra, end_ra, init_dec, end_dec, init_altitude,
                 end_altitude, init_azimuth, end_azimuth, init_time_collect_data, end_time_collect_data):
     dto = RunsDto()
     dto.id_run = id_run
     dto.run_number = run_number
     dto.id_run_type = id_run_type
+    dto.id_date = id_date
     dto.date = date
+    dto.hour = hour
     dto.id_config = id_config
     dto.number_of_subrun = number_of_subrun
     dto.events = events
