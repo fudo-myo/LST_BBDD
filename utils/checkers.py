@@ -89,13 +89,13 @@ class Checkers:
         return flag
 
     @classmethod
-    def validate_datetime(cls, value, field):
+    def validate_date(cls, value, field):
         flag = False
-        if isinstance(value, datetime.datetime):
+        if isinstance(value, datetime.date):
             flag = True
         else:
             try:
-                assert isinstance(value, datetime.datetime)
+                assert isinstance(value, datetime.date)
             except AssertionError:
                 logging.basicConfig(level=logging.WARNING,
                                     format=cls.__log_format,
