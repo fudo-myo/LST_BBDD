@@ -1,10 +1,12 @@
+import os
+
 from DTO.configuration_dto import ConfigurationDto
 from entities.lst_pixel_group import LstPixelGroup
 from services.lst_configuraction_service import LstConfigurationService
 from services.lst_pixel_group_service import LstPixelGroupService
 
-configService = LstConfigurationService()
-pxel_group = LstPixelGroupService()
+# configService = LstConfigurationService()
+# pxel_group = LstPixelGroupService()
 
 # gro = pxel_group.get_all_pixel_group()
 # for row in gro:
@@ -29,7 +31,7 @@ pxel_group = LstPixelGroupService()
 #     print("param1:", row.param_1, )
 #     print("param2:", row.param_2, )
 #     print("param3:", row.param_3, "\n")
-#configService.delete_by_id(6)
+# configService.delete_by_id(6)
 #
 #
 # configuration = configService.get_config_by_id(2)
@@ -39,5 +41,21 @@ pxel_group = LstPixelGroupService()
 # print("prueba filtrada -> param2:", configuration.param_2, )
 # print("prueba filtrada -> param3:", configuration.param_3, "\n")
 
-configService.update_config(7, None, 55, None, "sad param 3")
-#print("Prueba id: '{}'".format(config_insert_dto.id_config))
+# configService.update_config(7, None, 55, None, "sad param 3")
+# print("Prueba id: '{}'".format(config_insert_dto.id_config))
+
+# name_file = "RUNs_FROM_20181011.basic"
+# dir = 'C:\\Users\\fjromero\\Documents\\cta\\BBDD_ISIDRO\\basic_and_standard'
+# files_list = os.listdir(dir)
+# list_cleaned = []
+# for file in files_list:
+#     if "basic" in file:
+#         year = int(file[file.index("RUNs_FROM_") + len("RUNs_FROM_"):len("RUNs_FROM_") + 4])
+#         if year >= 2020:
+#             list_cleaned.append(file)
+
+run_string = "Run02092"
+
+run_number = int(run_string[run_string.index("Run")+ len("Run"):len("Run")+5])
+
+print(run_number)
