@@ -1,12 +1,12 @@
 class SubrunsDto:
 
-    def __init__(self, id_subrun=None, subrun_number=None, run_number=None, id_run_type=None, date=None,
+    def __init__(self, id_subrun=None, subrun_number=None, id_run=None, date=None, hour=None,
                  stream=None, events=None, length=None, rate=None, size=None, event_type=None, process_state=None):
         self.__id_subrun = id_subrun
         self.__subrun_number = subrun_number
-        self.__run_number = run_number
-        self.__id_run_type = id_run_type
+        self.__id_run = id_run
         self.__date = date
+        self.__hour = hour
         self.__stream = stream
         self.__events = events
         self.__length = length
@@ -24,16 +24,16 @@ class SubrunsDto:
         return self.__subrun_number
 
     @property
-    def run_number(self):
-        return self.__run_number
-
-    @property
-    def id_run_type(self):
-        return self.__id_run_type
+    def id_run(self):
+        return self.__id_run
 
     @property
     def date(self):
         return self.__date
+
+    @property
+    def hour(self):
+        return self.__hour
 
     @property
     def stream(self):
@@ -71,17 +71,17 @@ class SubrunsDto:
     def subrun_number(self, value):
         self.__subrun_number = value
 
-    @run_number.setter
-    def run_number(self, value):
-        self.__run_number = value
-
-    @id_run_type.setter
-    def id_run_type(self, value):
-        self.__id_run_type = value
+    @id_run.setter
+    def id_run(self, value):
+        self.__id_run = value
 
     @date.setter
     def date(self, value):
         self.__date = value
+
+    @hour.setter
+    def hour(self, value):
+        self.__hour = value
 
     @stream.setter
     def stream(self, value):
@@ -112,14 +112,14 @@ class SubrunsDto:
         self.__process_state = value
 
 
-def create_subrun(id_subrun, subrun_number, run_number, id_run_type, date, stream, events,
+def create_subrun(id_subrun, subrun_number, id_run, date, hour, stream, events,
                   length, rate, size, event_type, process_state):
     dto = SubrunsDto()
     dto.id_subrun = id_subrun
     dto.subrun_number = subrun_number
-    dto.run_number = run_number
-    dto.id_run_type = id_run_type
+    dto.id_run = id_run
     dto.date = date
+    dto.hour = hour
     dto.stream = stream
     dto.events = events
     dto.length = length

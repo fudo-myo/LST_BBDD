@@ -99,7 +99,7 @@ class LstDatesService:
     def get_all_dates(self):
         dates_dto_list = []
         try:
-            self.__all_dates: List[DatesDto] = self.__session.query(LstDates).all()
+            self.__all_dates = self.__session.query(LstDates).all()
             if len(self.__all_dates) != 0:
                 for row in self.__all_dates:
                     date_aux = create_date(

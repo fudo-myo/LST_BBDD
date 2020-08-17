@@ -24,9 +24,9 @@ class LstSubrunsService:
         try:
             subruns_aux = LstSubruns(
                 subrun_number=subruns_insert.subrun_number,
-                run_number=subruns_insert.run_number,
-                id_run_type=subruns_insert.id_run_type,
+                id_run=subruns_insert.id_run,
                 date=subruns_insert.date,
+                hour=subruns_insert.hour,
                 stream=subruns_insert.stream,
                 events=subruns_insert.events,
                 length=subruns_insert.length,
@@ -49,8 +49,8 @@ class LstSubrunsService:
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-    def update_subruns(self, id_subrun, subrun_number_to_search, subrun_number_to_update=None, run_number=None,
-                       id_run_type=None, date=None, stream=None, events=None, length=None, rate=None, size=None,
+    def update_subruns(self, id_subrun, subrun_number_to_search, subrun_number_to_update=None, id_run=None,
+                       date=None, hour=None, stream=None, events=None, length=None, rate=None, size=None,
                        event_type=None, process_state=None, ):
         try:
             subruns_before: SubrunsDto = self.get_subrun_by_id(id_subrun, subrun_number_to_search)
@@ -63,9 +63,9 @@ class LstSubrunsService:
                     .update({
                     LstSubruns.subrun_number: Checkers.check_field_not_null(LstSubruns.subrun_number,
                                                                             subrun_number_to_update),
-                    LstSubruns.run_number: Checkers.check_field_not_null(LstSubruns.run_number, run_number),
-                    LstSubruns.id_run_type: Checkers.check_field_not_null(LstSubruns.id_run_type, id_run_type),
+                    LstSubruns.id_run: Checkers.check_field_not_null(LstSubruns.id_run, id_run),
                     LstSubruns.date: Checkers.check_field_not_null(LstSubruns.date, date),
+                    LstSubruns.hour: Checkers.check_field_not_null(LstSubruns.hour, hour),
                     LstSubruns.stream: Checkers.check_field_not_null(LstSubruns.stream, stream),
                     LstSubruns.events: Checkers.check_field_not_null(LstSubruns.events, events),
                     LstSubruns.length: Checkers.check_field_not_null(LstSubruns.length, length),
@@ -129,9 +129,9 @@ class LstSubrunsService:
                     subrun_aux = create_subrun(
                         row.id_subrun,
                         row.subrun_number,
-                        row.run_number,
-                        row.id_run_type,
+                        row.id_run,
                         row.date,
+                        row.hour,
                         row.stream,
                         row.events,
                         row.length,
@@ -151,18 +151,53 @@ class LstSubrunsService:
 
         return subruns_dto_list
 
-    def get_subrun_by_id(self, id_subrun, subrun_number):
+    def get_subrun_by_id(self, id_subrun=None, subrun_number=None):
         try:
-            self.__subruns_by_id: SubrunsDto = self.__session.query(LstSubruns).filter(
-                LstSubruns.id_subrun.like(id_subrun),
-                LstSubruns.subrun_number.like(subrun_number)).first()
+            if id_subrun is not None:
+                self.__subruns_by_id: SubrunsDto = self.__session.query(LstSubruns).filter(
+                    LstSubruns.id_subrun.like(id_subrun),
+                    LstSubruns.subrun_number.like(subrun_number)).first()
+            else:
+                self.__subruns_by_id: SubrunsDto = self.__session.query(LstSubruns).filter(
+                    LstSubruns.subrun_number.like(subrun_number)).first()
             if self.__subruns_by_id is not None:
                 return create_subrun(
                     self.__subruns_by_id.id_subrun,
                     self.__subruns_by_id.subrun_number,
-                    self.__subruns_by_id.run_number,
-                    self.__subruns_by_id.id_run_type,
+                    self.__subruns_by_id.id_run,
                     self.__subruns_by_id.date,
+                    self.__subruns_by_id.hour,
+                    self.__subruns_by_id.stream,
+                    self.__subruns_by_id.events,
+                    self.__subruns_by_id.length,
+                    self.__subruns_by_id.rate,
+                    self.__subruns_by_id.size,
+                    self.__subruns_by_id.event_type,
+                    self.__subruns_by_id.process_state
+                )
+            else:
+                Checkers.print_object_filter_null(LstSubruns.id_subrun.name, str(id_subrun))
+                return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None)
+
+        except (InvalidRequestError, NameError) as error_request:
+            Checkers.print_exception_one_param(error_request)
+        except OperationalError as error_request2:
+            Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
+
+        return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None)
+
+    def get_subrun_by_idrun(self, id_run=None):
+        try:
+
+            self.__subruns_by_id: SubrunsDto = self.__session.query(LstSubruns).filter(
+                LstSubruns.id_run.like(id_run)).first()
+            if self.__subruns_by_id is not None:
+                return create_subrun(
+                    self.__subruns_by_id.id_subrun,
+                    self.__subruns_by_id.subrun_number,
+                    self.__subruns_by_id.id_run,
+                    self.__subruns_by_id.date,
+                    self.__subruns_by_id.hour,
                     self.__subruns_by_id.stream,
                     self.__subruns_by_id.events,
                     self.__subruns_by_id.length,
