@@ -186,11 +186,12 @@ class LstSubrunsService:
 
         return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None)
 
-    def get_subrun_by_idrun(self, id_run=None):
+    def get_subrun_by_idrun_and_subrun(self, id_run, subrun_number):
         try:
 
             self.__subruns_by_id: SubrunsDto = self.__session.query(LstSubruns).filter(
-                LstSubruns.id_run.like(id_run)).first()
+                LstSubruns.id_run.like(id_run),
+                LstSubruns.subrun_number.like(subrun_number)).first()
             if self.__subruns_by_id is not None:
                 return create_subrun(
                     self.__subruns_by_id.id_subrun,
@@ -207,7 +208,7 @@ class LstSubrunsService:
                     self.__subruns_by_id.process_state
                 )
             else:
-                Checkers.print_object_filter_null(LstSubruns.id_subrun.name, str(id_subrun))
+                Checkers.print_object_filter_null(LstSubruns.id_subrun.name, str(id_run))
                 return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None)
 
         except (InvalidRequestError, NameError) as error_request:

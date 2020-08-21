@@ -1,12 +1,13 @@
 class NightSummaryDto():
 
-    def __init__(self, run_num=None, n_subruns=None, run_type=None, fecha=None, hora=None, event_id_one=None,
-                 ts_from_ucts_one=None, tib_ts=None, event_id_two=None,
+    def __init__(self, run_num=None, n_subruns=None, run_type=None, date_fichero=None, registration_date=None,
+                 hora=None, event_id_one=None, ts_from_ucts_one=None, tib_ts=None, event_id_two=None,
                  ts_from_ucts_two=None, dragon_ts=None):
         self.__run_num = run_num
         self.__n_subruns = n_subruns
         self.__run_type = run_type
-        self.__fecha = fecha
+        self.__date_fichero = date_fichero
+        self.__registration_date = registration_date
         self.__hora = hora
         self.__event_id_one = event_id_one
         self.__ts_from_ucts_one = ts_from_ucts_one
@@ -28,8 +29,12 @@ class NightSummaryDto():
         return self.__run_type
 
     @property
-    def fecha(self):
-        return self.__fecha
+    def date_fichero(self):
+        return self.__date_fichero
+
+    @property
+    def registration_date(self):
+        return self.__registration_date
 
     @property
     def hora(self):
@@ -71,9 +76,13 @@ class NightSummaryDto():
     def run_type(self, value):
         self.__run_type = value
 
-    @fecha.setter
-    def fecha(self, value):
-        self.__fecha = value
+    @date_fichero.setter
+    def date_fichero(self, value):
+        self.__date_fichero = value
+
+    @registration_date.setter
+    def registration_date(self, value):
+        self.__registration_date = value
 
     @hora.setter
     def hora(self, value):

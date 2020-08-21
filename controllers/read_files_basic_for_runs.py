@@ -12,7 +12,7 @@ from services.lst_run_type_service import LstRunTypeService
 from services.lst_runs_service import LstRunsService
 from utils.cleaner_files import CleanerFiles
 
-dir = 'C:\\Users\\fjromero\\Documents\\cta\\BBDD_ISIDRO\\basic_and_standard'
+dir = 'C:\\Users\\fjromero\\Documents\\cta\\BBDD_ISIDRO\\basic_and_standard_reduced'
 files_list = CleanerFiles.get_basic_and_standard_files_current_year(os.listdir(dir), "basic", year_to_compare=2020)
 
 # WE CREATE AN INSTANCE OF EACH SERVICE ASSOCIATED WITH THE
@@ -55,8 +55,11 @@ for i in files_list:
                 clean_list.append(k)
         CleanerFiles.nan_to_none(clean_list)
         object_to_insert = RunBasicDto()
-        CleanerFiles.check_list_dimensions(clean_list, len(object_to_insert.__dict__.keys()))
-        object_to_insert.date = clean_list[0]
+
+        # ONE MUST BE SUBTRACTED BECAUSE THE DATE IS COLLECTED FROM THE FILE NAME NOT FROM THE CLEAN LIST
+        CleanerFiles.check_list_dimensions(clean_list, len(object_to_insert.__dict__.keys())-1)
+        object_to_insert.date_fichero = CleanerFiles.get_date_from_basic_files(i)
+        object_to_insert.registration_date = clean_list[0]
         object_to_insert.hour = clean_list[1]
         object_to_insert.run_name = CleanerFiles.check_run_number(clean_list[2])
         object_to_insert.subrun = clean_list[3]
@@ -64,20 +67,20 @@ for i in files_list:
         object_to_insert.length = clean_list[5]
         object_to_insert.rate = clean_list[6]
         object_to_insert.size = clean_list[7]
+
+        # TWO MUST BE SUBTRACTED BECAUSE IT IS FROM THE ELEMENT OF THE CLEAN LIST THAT THE EVENT TYPE PART BEGINS
         object_to_insert.event_type = CleanerFiles.check_event_type(clean_list,
-                                                                    len(object_to_insert.__dict__.keys()) - 1)
+                                                                    len(object_to_insert.__dict__.keys()) - 2)
         list_object_to_insert.append(object_to_insert)
         print("prueba")
 
 for object_aux in list_object_to_insert:
-    date_time_string = object_aux.date + " " + object_aux.hour
-    date_time = datetime.strptime(date_time_string, '%Y-%m-%d %H:%M:%S')
     dates: List[DatesDto] = dates_service.get_all_dates()
     date_dto = DatesDto()
-    date_dto.date_time = date_time
+    date_dto.date_dto = object_aux.date_fichero
     flag_date = False
     for date_aux in dates:
-        if date_aux.date_time == date_dto.date_time:
+        if date_aux.date_dto == date_dto.date_dto:
             flag_date = True
             break
     if not flag_date:
@@ -90,7 +93,9 @@ for object_aux in list_object_to_insert:
         if run.run_number == object_aux.run_name:
             run_aux.id_run = run.id_run
             run_aux.run_number = object_aux.run_name
-            run_aux.date = date_dto.date_time
+            run_aux.id_date = dates_service.get_date_by_id(date_dto.date_dto).id_date
+            run_aux.date = object_aux.registration_date
+            run_aux.hour = object_aux.hour
             run_aux.number_of_subrun = object_aux.subrun
             run_aux.events = object_aux.events
             run_aux.length = object_aux.length
@@ -100,7 +105,7 @@ for object_aux in list_object_to_insert:
             flag_run = True
             break
     if flag_run:
-        run_service.update_runs(run_aux.id_run, run_aux.run_number, None, run_aux.date, None, run_aux.number_of_subrun,
-                    run_aux.events, run_aux.length, run_aux.rate, run_aux.size, run_aux.event_type, None, None,
-                    None, None, None, None, None, None,
-                    None, None, None, None)
+        run_service.update_runs(run_aux.id_run, run_aux.run_number, None, run_aux.id_date, run_aux.date, run_aux.hour,
+                                None, run_aux.number_of_subrun, run_aux.events, run_aux.length, run_aux.rate,
+                                run_aux.size, run_aux.event_type, None, None, None, None, None, None, None, None,
+                                None, None, None, None)

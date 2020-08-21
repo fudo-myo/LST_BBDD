@@ -4,6 +4,7 @@ import logging
 from pandas._libs.parsers import basestring
 from sqlalchemy import Integer, INTEGER, VARCHAR, DATETIME, String, DateTime
 from sqlalchemy.dialects.mysql import DOUBLE
+from datetime import date
 
 
 class Checkers:
@@ -117,6 +118,14 @@ class Checkers:
     def validate_string(value):
         assert isinstance(value, basestring)
         return value
+
+    @staticmethod
+    def check_date_from_and_date_to(date_from, date_to):
+        if date_from is None:
+            date_from = '2020-01-01'
+        if date_to is None:
+            date_to = str(date.today())
+        return date_from, date_to
 
     @classmethod
     def get_validators(cls):

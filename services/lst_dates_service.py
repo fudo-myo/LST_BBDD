@@ -19,6 +19,7 @@ class LstDatesService:
         self.__session: Session = getSession()
         self.__all_dates = None
         self.__date_by_id = None
+        self.__date_between = None
 
     def insert_dates(self, dates_insert: DatesDto):
         try:
@@ -141,3 +142,24 @@ class LstDatesService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
         return create_date(None, None)
+
+    def get_date_between_dates(self, date_from, date_to):
+        dates_dto_list = []
+        try:
+            self.__date_between = self.__session.query(LstDates.id_date).filter(
+                LstDates.date_entity >= date_from,
+                LstDates.date_entity <= date_to
+            ).all()
+            if len(self.__date_between) != 0:
+                for row in self.__date_between:
+                    date_aux = create_date(
+                        row.id_date,
+                        row.date_entity
+                    )
+                    dates_dto_list.append(date_aux)
+        except (InvalidRequestError, NameError) as error_request:
+            Checkers.print_exception_one_param(error_request)
+        except OperationalError as error_request2:
+            Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
+
+        return dates_dto_list

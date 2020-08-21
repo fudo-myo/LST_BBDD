@@ -5,6 +5,8 @@ from sqlalchemy.orm import Session
 
 from DTO.runs_dto import RunsDto, create_runs
 from config.base import getSession
+from entities.lst_dates import LstDates
+from entities.lst_run_type import LstRunType
 from utils.checkers import Checkers
 
 try:
@@ -20,6 +22,8 @@ class LstRunsService:
         self.__all_runs = None
         self.__runs_by_id = None
         self.__runs_by_runnumber_date_runtype = None
+        self.__run_by_runnumber = None
+        self.__run_by_date_and_runtype = None
 
     def insert_runs(self, runs_insert: RunsDto):
         try:
@@ -229,18 +233,25 @@ class LstRunsService:
         return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
                            None, None, None, None, None, None, None, None, None, None)
 
-    def get_run_by_runnumber_date_runtype(self, run_number, date, id_run_type):
+    def get_run_by_runnumber_date_runtype(self, run_number, date, id_run_type=None):
         try:
-            self.__runs_by_runnumber_date_runtype: RunsDto = self.__session.query(LstRuns).filter(
-                LstRuns.run_number.like(run_number)) \
-                .filter(LstRuns.date.like(date)) \
-                .filter(LstRuns.id_run_type(id_run_type)).first()
+            if id_run_type is not None:
+                self.__runs_by_runnumber_date_runtype: RunsDto = self.__session.query(LstRuns).filter(
+                    LstRuns.run_number.like(run_number)) \
+                    .filter(LstRuns.date.like(date)) \
+                    .filter(LstRuns.id_run_type(id_run_type)).first()
+            else:
+                self.__runs_by_runnumber_date_runtype: RunsDto = self.__session.query(LstRuns).filter(
+                    LstRuns.run_number.like(run_number)) \
+                    .filter(LstRuns.date.like(date)).first()
             if self.__runs_by_runnumber_date_runtype is not None:
                 return create_runs(
                     self.__runs_by_runnumber_date_runtype.id_run,
                     self.__runs_by_runnumber_date_runtype.run_number,
                     self.__runs_by_runnumber_date_runtype.id_run_type,
+                    self.__runs_by_runnumber_date_runtype.id_date,
                     self.__runs_by_runnumber_date_runtype.date,
+                    self.__runs_by_runnumber_date_runtype.hour,
                     self.__runs_by_runnumber_date_runtype.id_config,
                     self.__runs_by_runnumber_date_runtype.number_of_subrun,
                     self.__runs_by_runnumber_date_runtype.events,
@@ -275,3 +286,104 @@ class LstRunsService:
 
         return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
                            None, None, None, None, None, None, None, None, None, None)
+
+    def get_run_by_runnumber(self, run_number):
+        try:
+            self.__run_by_runnumber: RunsDto = self.__session.query(LstRuns).filter(
+                LstRuns.run_number.like(run_number)).first()
+            if self.__run_by_runnumber is not None:
+                return create_runs(
+                    self.__run_by_runnumber.id_run,
+                    self.__run_by_runnumber.run_number,
+                    self.__run_by_runnumber.id_run_type,
+                    self.__run_by_runnumber.id_date,
+                    self.__run_by_runnumber.date,
+                    self.__run_by_runnumber.hour,
+                    self.__run_by_runnumber.id_config,
+                    self.__run_by_runnumber.number_of_subrun,
+                    self.__run_by_runnumber.events,
+                    self.__run_by_runnumber.length,
+                    self.__run_by_runnumber.rate,
+                    self.__run_by_runnumber.size,
+                    self.__run_by_runnumber.event_type,
+                    self.__run_by_runnumber.id_production,
+                    self.__run_by_runnumber.path_file,
+                    self.__run_by_runnumber.init_ra,
+                    self.__run_by_runnumber.end_ra,
+                    self.__run_by_runnumber.init_dec,
+                    self.__run_by_runnumber.end_dec,
+                    self.__run_by_runnumber.init_altitude,
+                    self.__run_by_runnumber.end_altitude,
+                    self.__run_by_runnumber.init_azimuth,
+                    self.__run_by_runnumber.end_azimuth,
+                    self.__run_by_runnumber.init_time_collect_data,
+                    self.__run_by_runnumber.end_time_collect_data
+                )
+            else:
+                Checkers.print_object_filter_null(LstRuns.run_number.name, str(run_number))
+                return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+                                   None, None, None, None, None, None, None, None, None, None, None)
+
+        except (InvalidRequestError, NameError) as error_request:
+            Checkers.print_exception_one_param(error_request)
+        except OperationalError as error_request2:
+            Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
+
+        return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+                           None, None, None, None, None, None, None, None, None, None)
+
+    def get_runs_by_date_and_runtype(self, run_type,  date_from=None, date_to=None):
+        runs__dto_list = []
+        try:
+            # If the date from is null, it is set to January 1, 2020 by default and if the date to
+            # is null, today is set as the default date
+            date_from_aux, date_to_aux = Checkers.check_date_from_and_date_to(date_from, date_to)
+            subquery_dates = self.__session.query(LstDates.id_date).filter(
+                LstDates.date_entity >= date_from_aux,
+                LstDates.date_entity <= date_to_aux).subquery()
+            subquery_runtype = self.__session.query(LstRunType.id_run_type).filter(
+                LstRunType.description_run_type.like(run_type)).subquery()
+            self.__run_by_date_and_runtype = self.__session.query(LstRuns) \
+                .filter(LstRuns.id_date.in_(
+                subquery_dates)) \
+                .filter(LstRuns.id_run_type.in_(
+                subquery_runtype)).all()
+            if len(self.__run_by_date_and_runtype) != 0:
+                for row in self.__run_by_date_and_runtype:
+                    run_aux = create_runs(
+                        row.id_run,
+                        row.run_number,
+                        row.id_run_type,
+                        row.id_date,
+                        row.date,
+                        row.hour,
+                        row.id_config,
+                        row.number_of_subrun,
+                        row.events,
+                        row.length,
+                        row.rate,
+                        row.size,
+                        row.event_type,
+                        row.id_production,
+                        row.path_file,
+                        row.init_ra,
+                        row.end_ra,
+                        row.init_dec,
+                        row.end_dec,
+                        row.init_altitude,
+                        row.end_altitude,
+                        row.init_azimuth,
+                        row.end_azimuth,
+                        row.init_time_collect_data,
+                        row.end_time_collect_data
+                    )
+                    runs__dto_list.append(run_aux)
+            else:
+                Checkers.empty_list(LstRuns.__tablename__.name)
+
+        except (InvalidRequestError, NameError) as error_request:
+            Checkers.print_exception_one_param(error_request)
+        except OperationalError as error_request2:
+            Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
+
+        return runs__dto_list
