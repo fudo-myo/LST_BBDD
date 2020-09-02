@@ -184,6 +184,10 @@ class CleanerFiles:
             line_file = line_file.replace(regular_expresion.group(0), "")
             return line_file, regular_expresion.group(0)
 
+    """
+        This method convert string to number
+    """
+
     @staticmethod
     def convert_string_to_number(string, number_type):
         value_aux = string
@@ -193,3 +197,13 @@ class CleanerFiles:
             elif number_type == "float":
                 value_aux = float(string)
         return value_aux
+
+    """
+        This method add hyphen to date string
+    """
+
+    @staticmethod
+    def add_hyphen_to_date(date_init):
+        if len(date_init) == 8:
+            date_init = date_init[:4] + "-" + date_init[4:6] + "-" + date_init[6:]
+        return date_init

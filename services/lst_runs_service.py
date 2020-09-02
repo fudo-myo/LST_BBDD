@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 
 from sqlalchemy.exc import InvalidRequestError, OperationalError
 from sqlalchemy.orm import Session
@@ -332,7 +332,7 @@ class LstRunsService:
         return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
                            None, None, None, None, None, None, None, None, None, None)
 
-    def get_runs_by_date_and_runtype(self, run_type,  date_from=None, date_to=None):
+    def get_runs_by_date_and_runtype(self, run_type, date_from=None, date_to=None):
         runs__dto_list = []
         try:
             # If the date from is null, it is set to January 1, 2020 by default and if the date to
@@ -341,6 +341,59 @@ class LstRunsService:
             subquery_dates = self.__session.query(LstDates.id_date).filter(
                 LstDates.date_entity >= date_from_aux,
                 LstDates.date_entity <= date_to_aux).subquery()
+            subquery_runtype = self.__session.query(LstRunType.id_run_type).filter(
+                LstRunType.description_run_type.like(run_type)).subquery()
+            self.__run_by_date_and_runtype = self.__session.query(LstRuns) \
+                .filter(LstRuns.id_date.in_(
+                subquery_dates)) \
+                .filter(LstRuns.id_run_type.in_(
+                subquery_runtype)).all()
+            if len(self.__run_by_date_and_runtype) != 0:
+                for row in self.__run_by_date_and_runtype:
+                    run_aux = create_runs(
+                        row.id_run,
+                        row.run_number,
+                        row.id_run_type,
+                        row.id_date,
+                        row.date,
+                        row.hour,
+                        row.id_config,
+                        row.number_of_subrun,
+                        row.events,
+                        row.length,
+                        row.rate,
+                        row.size,
+                        row.event_type,
+                        row.id_production,
+                        row.path_file,
+                        row.init_ra,
+                        row.end_ra,
+                        row.init_dec,
+                        row.end_dec,
+                        row.init_altitude,
+                        row.end_altitude,
+                        row.init_azimuth,
+                        row.end_azimuth,
+                        row.init_time_collect_data,
+                        row.end_time_collect_data
+                    )
+                    runs__dto_list.append(run_aux)
+            else:
+                Checkers.empty_list(LstRuns.__tablename__.name)
+
+        except (InvalidRequestError, NameError) as error_request:
+            Checkers.print_exception_one_param(error_request)
+        except OperationalError as error_request2:
+            Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
+
+        return runs__dto_list
+
+    def get_runs_by_date_and_runtype(self, run_type, date_list):
+        runs__dto_list = []
+        try:
+            #The above method is overloaded passing a list of dates instead of a range
+            subquery_dates = self.__session.query(LstDates.id_date).filter(
+                LstDates.date_entity.in_(date_list)).subquery()
             subquery_runtype = self.__session.query(LstRunType.id_run_type).filter(
                 LstRunType.description_run_type.like(run_type)).subquery()
             self.__run_by_date_and_runtype = self.__session.query(LstRuns) \

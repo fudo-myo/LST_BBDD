@@ -8,7 +8,7 @@ from services.lst_runs_service import LstRunsService
 from services.lst_subruns_service import LstSubrunsService
 from utils.cleaner_files import CleanerFiles
 
-dir = 'C:\\Users\\fjromero\\Documents\\cta\\BBDD_ISIDRO\\basic_and_standard_reduced'
+dir = 'C:\\Users\\fjromero\\Documents\\cta\\BBDD_ISIDRO\\basic_and_standard'
 files_list = CleanerFiles.get_basic_and_standard_files_current_year(os.listdir(dir), "standard", year_to_compare=2020)
 
 run_service = LstRunsService()

@@ -12,7 +12,7 @@ from services.lst_run_type_service import LstRunTypeService
 from services.lst_runs_service import LstRunsService
 from utils.cleaner_files import CleanerFiles
 
-dir = 'C:\\Users\\fjromero\\Documents\\cta\\BBDD_ISIDRO\\basic_and_standard_reduced'
+dir = 'C:\\Users\\fjromero\\Documents\\cta\\BBDD_ISIDRO\\basic_and_standard'
 files_list = CleanerFiles.get_basic_and_standard_files_current_year(os.listdir(dir), "basic", year_to_compare=2020)
 
 # WE CREATE AN INSTANCE OF EACH SERVICE ASSOCIATED WITH THE
