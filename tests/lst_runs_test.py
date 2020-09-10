@@ -59,6 +59,8 @@ class LstRunsTests(unittest.TestCase):
         runs_dto.end_azimuth = 9.25
         runs_dto.init_time_collect_data = datetime.now()
         runs_dto.end_time_collect_data = datetime.now()
+        runs_dto.id_source = 1
+        runs_dto.source_des = "Altair"
         runs_service.insert_runs(runs_dto)
         self.assertIsNotNone(runs_dto.id_run, TestUtils.assert_insert_message(LstTableNames.LST_RUNS))
         TestUtils.print_insert_trace(LstTableNames.LST_RUNS, runs_dto.id_run)
@@ -72,7 +74,7 @@ class LstRunsTests(unittest.TestCase):
         runs_service.update_runs(runs_before.id_run, 2, 2, id_date, date.today() + timedelta(days=10),
                                  (datetime.now() + timedelta(hours=5)).time(), 2, 2, 2, 2.5, 2.5,
                                  "3GB", "P=100%", 2, "TU path update", 2.22, 3.33, 4.44, 5.55, 6.66, 7.77, 8.88, 9.99,
-                                 datetime.now() + timedelta(days=30), datetime.now() + timedelta(days=40))
+                                 datetime.now() + timedelta(days=30), datetime.now() + timedelta(days=40), 2, "Antares")
         runs_after: RunsDto = runs_service.get_runs_by_id(value)
         self.assertIsNotNone(runs_after.id_run)
         self.assertNotEqual(runs_before.run_number, runs_after.run_number,
@@ -117,6 +119,10 @@ class LstRunsTests(unittest.TestCase):
                             TestUtils.assert_update_message(LstRuns.init_time_collect_data.name))
         self.assertNotEqual(runs_before.end_time_collect_data, runs_after.end_time_collect_data,
                             TestUtils.assert_update_message(LstRuns.end_time_collect_data.name))
+        self.assertNotEqual(runs_before.id_source, runs_after.id_source,
+                            TestUtils.assert_update_message(LstRuns.id_source.name))
+        self.assertNotEqual(runs_before.source_des, runs_after.source_des,
+                            TestUtils.assert_update_message(LstRuns.source_des.name))
         TestUtils.print_update_trace(LstTableNames.LST_RUNS, runs_after.id_run)
 
     def test_delete_runs(self):

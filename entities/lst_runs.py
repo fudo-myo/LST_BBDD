@@ -37,3 +37,5 @@ if Checkers.check_table_exists(getEngine(), LstTableNames.LST_RUNS):
         end_azimuth = Column('END_AZIMUTH', FLOAT, nullable=True)
         init_time_collect_data = Column('INIT_TIME_COLLECT_DATA', DateTime, nullable=True)
         end_time_collect_data = Column('END_TIME_COLLECT_DATA', DateTime, nullable=True)
+        id_source = Column('ID_SOURCE', INTEGER, nullable=True)
+        source_des = Column('SOURCE_DES', VARCHAR(50), nullable=True)
