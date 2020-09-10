@@ -21,3 +21,4 @@ class LstTableNames:
     LST_RUN_TYPE = "LST_RUN_TYPE"
     LST_RUNS = "LST_RUNS"
     LST_SUBRUNS = "LST_SUBRUNS"
+    LST_SOURCES = "LST_SOURCES"

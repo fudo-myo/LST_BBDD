@@ -1,8 +1,9 @@
 class RunBasicDto():
 
-    def __init__(self, date=None, hour=None, run_name=None, subrun=None, events=None, length=None,
+    def __init__(self, date_fichero=None, registration_date=None, hour=None, run_name=None, subrun=None, events=None, length=None,
                  rate=None, size=None, event_type=None):
-        self.__date = date
+        self.__date_fichero = date_fichero
+        self.__registration_date = registration_date
         self.__hour = hour
         self.__run_name = run_name
         self.__subrun = subrun
@@ -13,8 +14,12 @@ class RunBasicDto():
         self.__event_type = event_type
 
     @property
-    def date(self):
-        return self.__date
+    def date_fichero(self):
+        return self.__date_fichero
+
+    @property
+    def registration_date(self):
+        return self.__registration_date
 
     @property
     def hour(self):
@@ -48,9 +53,13 @@ class RunBasicDto():
     def event_type(self):
         return self.__event_type
 
-    @date.setter
-    def date(self, value):
-        self.__date = value
+    @date_fichero.setter
+    def date_fichero(self, value):
+        self.__date_fichero = value
+
+    @registration_date.setter
+    def registration_date(self, value):
+        self.__registration_date = value
 
     @hour.setter
     def hour(self, value):

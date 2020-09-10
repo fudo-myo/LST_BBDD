@@ -4,6 +4,7 @@ import logging
 from pandas._libs.parsers import basestring
 from sqlalchemy import Integer, INTEGER, VARCHAR, DATETIME, String, DateTime
 from sqlalchemy.dialects.mysql import DOUBLE
+from datetime import date
 
 
 class Checkers:
@@ -113,10 +114,37 @@ class Checkers:
             assert isinstance(value, float)
         return value
 
+    @classmethod
+    def validate_string(cls, value, field):
+        flag = False
+        if isinstance(value, basestring):
+            flag =True
+        else:
+            try:
+                assert isinstance(value, basestring)
+            except AssertionError:
+                logging.basicConfig(level=logging.WARNING,
+                                    format=cls.__log_format,
+                                    datefmt=cls.__log_date_format)
+                logging.warning(
+                    "************ The field '{}' with value '{}' is not String ************".format(
+                        field, value))
+        return flag
+
     @staticmethod
-    def validate_string(value):
-        assert isinstance(value, basestring)
-        return value
+    def check_if_key_exist(dictionary, key):
+        if key in dictionary:
+            return dictionary[key]
+        else:
+            return None
+
+    @staticmethod
+    def check_date_from_and_date_to(date_from, date_to):
+        if date_from is None:
+            date_from = '2020-01-01'
+        if date_to is None:
+            date_to = str(date.today())
+        return date_from, date_to
 
     @classmethod
     def get_validators(cls):

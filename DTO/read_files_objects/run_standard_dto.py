@@ -1,7 +1,7 @@
 class RunStandardSto():
 
     def __init__(self, date=None, hour=None, run_name=None, subrun=None, stream=None, events=None, length=None,
-                 rate=None, size=None, event_type=None, process_state=None):
+                 rate=None, size=None, event_type=None, process_state=None, id_run=None):
         self.__date = date
         self.__hour = hour
         self.__run_name = run_name
@@ -13,6 +13,8 @@ class RunStandardSto():
         self.__size = size
         self.__event_type = event_type
         self.__process_state = process_state
+        self.__id_run = id_run
+
 
     @property
     def date(self):
@@ -58,6 +60,10 @@ class RunStandardSto():
     def process_state(self):
         return self.__process_state
 
+    @property
+    def id_run(self):
+        return self.__id_run
+
     @date.setter
     def date(self, value):
         self.__date = value
@@ -101,3 +107,7 @@ class RunStandardSto():
     @process_state.setter
     def process_state(self, value):
         self.__process_state = value
+
+    @id_run.setter
+    def id_run(self, value):
+        self.__id_run = value
