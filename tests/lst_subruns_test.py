@@ -57,6 +57,10 @@ class LstSubrunsTests(unittest.TestCase):
         subruns_dto.size = "15MB"
         subruns_dto.event_type = "M= 82% P= 18%"
         subruns_dto.process_state = "R1 Ready"
+        subruns_dto.waveform_data = "waveform data insert"
+        subruns_dto.waveform_filter = "waveform filter insert"
+        subruns_dto.counter_data = "counter data insert"
+        subruns_dto.counter_filter = "counter filter insert"
         subruns_service.insert_subruns(subruns_dto)
         self.assertIsNotNone(subruns_dto.id_subrun, TestUtils.assert_insert_message(LstTableNames.LST_SUBRUNS))
         TestUtils.print_insert_trace(LstTableNames.LST_SUBRUNS, subruns_dto.id_subrun)
@@ -72,7 +76,8 @@ class LstSubrunsTests(unittest.TestCase):
         id_subrun_after, subrun_number_after, id_run_after = self.test_insert_subruns()
         subruns_service.update_subruns(subruns_before.id_subrun, subruns_before.subrun_number, 2, id_run_after,
                                        date.today() + timedelta(days=10), (datetime.now() + timedelta(hours=5)).time(),
-                                       "[3,2,1,0]", 2, 2.5, 2.5, "3GB", "P=100%", "R1 KO")
+                                       "[3,2,1,0]", 2, 2.5, 2.5, "3GB", "P=100%", "R1 KO", "waveform data update",
+                                       "waveform filter update", "counter data update", "counter filter update")
         subruns_after: SubrunsDto = subruns_service.get_subrun_by_id(id_subrun, 2)
         self.assertIsNotNone(subruns_after.id_subrun)
         self.assertIsNotNone(subruns_after.subrun_number)
@@ -98,6 +103,14 @@ class LstSubrunsTests(unittest.TestCase):
                             TestUtils.assert_update_message(LstSubruns.event_type.name))
         self.assertNotEqual(subruns_before.process_state, subruns_after.process_state,
                             TestUtils.assert_update_message(LstSubruns.process_state.name))
+        self.assertNotEqual(subruns_before.waveform_data, subruns_after.waveform_data,
+                            TestUtils.assert_update_message(LstSubruns.waveform_data.name))
+        self.assertNotEqual(subruns_before.waveform_filter, subruns_after.waveform_filter,
+                            TestUtils.assert_update_message(LstSubruns.waveform_filter.name))
+        self.assertNotEqual(subruns_before.counter_data, subruns_after.counter_data,
+                            TestUtils.assert_update_message(LstSubruns.counter_data.name))
+        self.assertNotEqual(subruns_before.counter_filter, subruns_after.counter_filter,
+                            TestUtils.assert_update_message(LstSubruns.counter_filter.name))
         TestUtils.print_update_trace(LstTableNames.LST_SUBRUNS,
                                      str(subruns_before.id_subrun) + ", " + str(subruns_before.subrun_number))
 
@@ -133,10 +146,10 @@ class LstSubrunsTests(unittest.TestCase):
         TestUtils.print_get_by_id_trace(LstTableNames.LST_SUBRUNS,
                                         str(subruns_dto.id_subrun) + ", " + str(subruns_dto.subrun_number))
 
-    def test_get_by_id_run(self):
+    def test_get_subrun_by_idrun_and_subrun(self):
         id_subrun, subrun_number, id_run = self.test_insert_subruns()
         subruns_service = LstSubrunsService()
-        subruns_dto: SubrunsDto = subruns_service.get_subrun_by_idrun(id_run)
+        subruns_dto: SubrunsDto = subruns_service.get_subrun_by_idrun_and_subrun(id_run, subrun_number)
         self.assertIsNotNone(subruns_dto.id_subrun)
         self.assertIsNotNone(subruns_dto.subrun_number, TestUtils.assert_get_by_id_message(LstTableNames.LST_SUBRUNS,
                                                                                            str(id_subrun)))

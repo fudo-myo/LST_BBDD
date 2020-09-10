@@ -33,7 +33,11 @@ class LstSubrunsService:
                 rate=subruns_insert.rate,
                 size=subruns_insert.size,
                 event_type=subruns_insert.event_type,
-                process_state=subruns_insert.process_state
+                process_state=subruns_insert.process_state,
+                waveform_data=subruns_insert.waveform_data,
+                waveform_filter=subruns_insert.waveform_filter,
+                counter_data=subruns_insert.counter_data,
+                counter_filter=subruns_insert.counter_filter
             )
             self.__session.add(subruns_aux)
             self.__session.commit()
@@ -51,7 +55,8 @@ class LstSubrunsService:
 
     def update_subruns(self, id_subrun, subrun_number_to_search, subrun_number_to_update=None, id_run=None,
                        date=None, hour=None, stream=None, events=None, length=None, rate=None, size=None,
-                       event_type=None, process_state=None, ):
+                       event_type=None, process_state=None, waveform_data=None, waveform_filter=None, counter_data=None,
+                       counter_filter=None):
         try:
             subruns_before: SubrunsDto = self.get_subrun_by_id(id_subrun, subrun_number_to_search)
             if Checkers.validate_int(id_subrun, LstSubruns.id_subrun.name) and \
@@ -72,7 +77,12 @@ class LstSubrunsService:
                     LstSubruns.rate: Checkers.check_field_not_null(LstSubruns.rate, rate),
                     LstSubruns.size: Checkers.check_field_not_null(LstSubruns.size, size),
                     LstSubruns.event_type: Checkers.check_field_not_null(LstSubruns.event_type, event_type),
-                    LstSubruns.process_state: Checkers.check_field_not_null(LstSubruns.process_state, process_state)
+                    LstSubruns.process_state: Checkers.check_field_not_null(LstSubruns.process_state, process_state),
+                    LstSubruns.waveform_data: Checkers.check_field_not_null(LstSubruns.waveform_data, waveform_data),
+                    LstSubruns.waveform_filter: Checkers.check_field_not_null(LstSubruns.waveform_filter,
+                                                                              waveform_filter),
+                    LstSubruns.counter_data: Checkers.check_field_not_null(LstSubruns.counter_data, counter_data),
+                    LstSubruns.counter_filter: Checkers.check_field_not_null(LstSubruns.counter_filter, counter_filter)
                 },
                     synchronize_session=False
                 )
@@ -138,7 +148,11 @@ class LstSubrunsService:
                         row.rate,
                         row.size,
                         row.event_type,
-                        row.process_state
+                        row.process_state,
+                        row.waveform_data,
+                        row.waveform_filter,
+                        row.counter_data,
+                        row.counter_filter
                     )
                     subruns_dto_list.append(subrun_aux)
             else:
@@ -173,18 +187,24 @@ class LstSubrunsService:
                     self.__subruns_by_id.rate,
                     self.__subruns_by_id.size,
                     self.__subruns_by_id.event_type,
-                    self.__subruns_by_id.process_state
+                    self.__subruns_by_id.process_state,
+                    self.__subruns_by_id.waveform_data,
+                    self.__subruns_by_id.waveform_filter,
+                    self.__subruns_by_id.counter_data,
+                    self.__subruns_by_id.counter_filter
                 )
             else:
                 Checkers.print_object_filter_null(LstSubruns.id_subrun.name, str(id_subrun))
-                return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None)
+                return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+                                     None, None)
 
         except (InvalidRequestError, NameError) as error_request:
             Checkers.print_exception_one_param(error_request)
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-        return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None)
+        return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
+                             None)
 
     def get_subrun_by_idrun_and_subrun(self, id_run, subrun_number):
         try:
@@ -205,15 +225,19 @@ class LstSubrunsService:
                     self.__subruns_by_id.rate,
                     self.__subruns_by_id.size,
                     self.__subruns_by_id.event_type,
-                    self.__subruns_by_id.process_state
+                    self.__subruns_by_id.process_state,
+                    self.__subruns_by_id.waveform_data,
+                    self.__subruns_by_id.waveform_filter,
+                    self.__subruns_by_id.counter_data,
+                    self.__subruns_by_id.counter_filter
                 )
             else:
                 Checkers.print_object_filter_null(LstSubruns.id_subrun.name, str(id_run))
-                return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None)
+                return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)
 
         except (InvalidRequestError, NameError) as error_request:
             Checkers.print_exception_one_param(error_request)
         except OperationalError as error_request2:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
-        return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None)
+        return create_subrun(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None)

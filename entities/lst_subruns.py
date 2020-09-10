@@ -19,3 +19,7 @@ if Checkers.check_table_exists(getEngine(), LstTableNames.LST_SUBRUNS):
         size = Column('SIZE', VARCHAR(12), nullable=True)
         event_type = Column('EVENT_TYPE', VARCHAR(40), nullable=True)
         process_state = Column('PROCESS_STATE', VARCHAR(15), nullable=True)
+        waveform_data = Column('WAVEFORM_DATA', VARCHAR(255), nullable=True)
+        waveform_filter = Column('WAVEFORM_FILTER', VARCHAR(255), nullable=True)
+        counter_data = Column('COUNTER_DATA', VARCHAR(255), nullable=True)
+        counter_filter = Column('COUNTER_FILTER', VARCHAR(255), nullable=True)
