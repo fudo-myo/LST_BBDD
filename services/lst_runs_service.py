@@ -51,7 +51,9 @@ class LstRunsService:
                 init_azimuth=runs_insert.init_azimuth,
                 end_azimuth=runs_insert.end_azimuth,
                 init_time_collect_data=runs_insert.init_time_collect_data,
-                end_time_collect_data=runs_insert.end_time_collect_data
+                end_time_collect_data=runs_insert.end_time_collect_data,
+                id_source=runs_insert.id_source,
+                source_des=runs_insert.source_des
             )
             self.__session.add(runs_aux)
             self.__session.commit()
@@ -71,7 +73,7 @@ class LstRunsService:
                     number_of_subrun=None, events=None, length=None, rate=None, size=None, event_type=None,
                     id_production=None, path_file=None, init_ra=None, end_ra=None, init_dec=None, end_dec=None,
                     init_altitude=None, end_altitude=None, init_azimuth=None, end_azimuth=None,
-                    init_time_collect_data=None, end_time_collect_data=None):
+                    init_time_collect_data=None, end_time_collect_data=None, id_source=None, source_des=None):
         try:
             runs_before: RunsDto = self.get_runs_by_id(id_run)
             if Checkers.validate_int(id_run, LstRuns.id_run.name) and runs_before.id_run is not None:
@@ -102,7 +104,9 @@ class LstRunsService:
                     LstRuns.init_time_collect_data: Checkers.check_field_not_null(LstRuns.init_time_collect_data,
                                                                                   init_time_collect_data),
                     LstRuns.end_time_collect_data: Checkers.check_field_not_null(LstRuns.end_time_collect_data,
-                                                                                 end_time_collect_data)
+                                                                                 end_time_collect_data),
+                    LstRuns.id_source: Checkers.check_field_not_null(LstRuns.id_source, id_source),
+                    LstRuns.source_des: Checkers.check_field_not_null(LstRuns.source_des, source_des)
                 },
                     synchronize_session=False
                 )
@@ -176,7 +180,9 @@ class LstRunsService:
                         row.init_azimuth,
                         row.end_azimuth,
                         row.init_time_collect_data,
-                        row.end_time_collect_data
+                        row.end_time_collect_data,
+                        row.id_source,
+                        row.source_des
                     )
                     runs__dto_list.append(run_aux)
             else:
@@ -218,12 +224,14 @@ class LstRunsService:
                     self.__runs_by_id.init_azimuth,
                     self.__runs_by_id.end_azimuth,
                     self.__runs_by_id.init_time_collect_data,
-                    self.__runs_by_id.end_time_collect_data
+                    self.__runs_by_id.end_time_collect_data,
+                    self.__runs_by_id.id_source,
+                    self.__runs_by_id.source_des
                 )
             else:
                 Checkers.print_object_filter_null(LstRuns.id_run.name, str(id_run))
                 return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                                   None, None, None, None, None, None, None, None, None, None, None)
+                                   None, None, None, None, None, None, None, None, None, None, None, None, None)
 
         except (InvalidRequestError, NameError) as error_request:
             Checkers.print_exception_one_param(error_request)
@@ -231,7 +239,7 @@ class LstRunsService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
         return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                           None, None, None, None, None, None, None, None, None, None)
+                           None, None, None, None, None, None, None, None, None, None, None, None)
 
     def get_run_by_runnumber_date_runtype(self, run_number, date, id_run_type=None):
         try:
@@ -270,14 +278,16 @@ class LstRunsService:
                     self.__runs_by_runnumber_date_runtype.init_azimuth,
                     self.__runs_by_runnumber_date_runtype.end_azimuth,
                     self.__runs_by_runnumber_date_runtype.init_time_collect_data,
-                    self.__runs_by_runnumber_date_runtype.end_time_collect_data
+                    self.__runs_by_runnumber_date_runtype.end_time_collect_data,
+                    self.__runs_by_runnumber_date_runtype.id_source,
+                    self.__runs_by_runnumber_date_runtype.source_des
                 )
             else:
                 Checkers.print_object_filter_null(LstRuns.run_number.name, str(run_number))
                 Checkers.print_object_filter_null(LstRuns.date.name, str(date))
                 Checkers.print_object_filter_null(LstRuns.id_run_type.name, str(id_run_type))
                 return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                                   None, None, None, None, None, None, None, None, None, None, None)
+                                   None, None, None, None, None, None, None, None, None, None, None, None, None)
 
         except (InvalidRequestError, NameError) as error_request:
             Checkers.print_exception_one_param(error_request)
@@ -285,7 +295,7 @@ class LstRunsService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
         return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                           None, None, None, None, None, None, None, None, None, None)
+                           None, None, None, None, None, None, None, None, None, None, None, None)
 
     def get_run_by_runnumber(self, run_number):
         try:
@@ -317,12 +327,14 @@ class LstRunsService:
                     self.__run_by_runnumber.init_azimuth,
                     self.__run_by_runnumber.end_azimuth,
                     self.__run_by_runnumber.init_time_collect_data,
-                    self.__run_by_runnumber.end_time_collect_data
+                    self.__run_by_runnumber.end_time_collect_data,
+                    self.__run_by_runnumber.id_source,
+                    self.__run_by_runnumber.source_des
                 )
             else:
                 Checkers.print_object_filter_null(LstRuns.run_number.name, str(run_number))
                 return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                                   None, None, None, None, None, None, None, None, None, None, None)
+                                   None, None, None, None, None, None, None, None, None, None, None, None, None)
 
         except (InvalidRequestError, NameError) as error_request:
             Checkers.print_exception_one_param(error_request)
@@ -330,7 +342,7 @@ class LstRunsService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
         return create_runs(None, None, None, None, None, None, None, None, None, None, None, None, None, None, None,
-                           None, None, None, None, None, None, None, None, None, None)
+                           None, None, None, None, None, None, None, None, None, None, None, None)
 
     def get_runs_by_date_and_runtype(self, run_type, date_from=None, date_to=None):
         runs__dto_list = []
@@ -375,7 +387,9 @@ class LstRunsService:
                         row.init_azimuth,
                         row.end_azimuth,
                         row.init_time_collect_data,
-                        row.end_time_collect_data
+                        row.end_time_collect_data,
+                        row.id_source,
+                        row.source_des
                     )
                     runs__dto_list.append(run_aux)
             else:
@@ -391,7 +405,7 @@ class LstRunsService:
     def get_runs_by_date_and_runtype(self, run_type, date_list):
         runs__dto_list = []
         try:
-            #The above method is overloaded passing a list of dates instead of a range
+            # The above method is overloaded passing a list of dates instead of a range
             subquery_dates = self.__session.query(LstDates.id_date).filter(
                 LstDates.date_entity.in_(date_list)).subquery()
             subquery_runtype = self.__session.query(LstRunType.id_run_type).filter(
@@ -428,7 +442,9 @@ class LstRunsService:
                         row.init_azimuth,
                         row.end_azimuth,
                         row.init_time_collect_data,
-                        row.end_time_collect_data
+                        row.end_time_collect_data,
+                        row.id_source,
+                        row.source_des
                     )
                     runs__dto_list.append(run_aux)
             else:
