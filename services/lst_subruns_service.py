@@ -55,8 +55,8 @@ class LstSubrunsService:
 
     def update_subruns(self, id_subrun, subrun_number_to_search, subrun_number_to_update=None, id_run=None,
                        date=None, hour=None, stream=None, events=None, length=None, rate=None, size=None,
-                       event_type=None, process_state=None, waveform_data=None, waveform_filter=None, counter_data=None,
-                       counter_filter=None):
+                       event_type=None, process_state=None, waveform_filter=None, waveform_data=None, counter_filter=None,
+                       counter_data=None):
         try:
             subruns_before: SubrunsDto = self.get_subrun_by_id(id_subrun, subrun_number_to_search)
             if Checkers.validate_int(id_subrun, LstSubruns.id_subrun.name) and \
