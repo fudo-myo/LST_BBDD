@@ -35,6 +35,18 @@ class CleanerFiles:
 
         return basic_files_cleaned
 
+    @staticmethod
+    def get_data_availability_files_current_year(data_availability_files, year_to_compare):
+        basic_files_cleaned = []
+        for data_file in data_availability_files:
+            year = int(data_file[
+                       data_file.index("RUNs_DATA_AVAILABILITY_FROM_") + len("RUNs_DATA_AVAILABILITY_FROM_"):len(
+                           "RUNs_DATA_AVAILABILITY_FROM_") + 4])
+            if year >= year_to_compare:
+                basic_files_cleaned.append(data_file)
+
+        return basic_files_cleaned
+
     """
         This method converts the 'nan' to None so there is no problem
         in the constructors of the DTO classes
