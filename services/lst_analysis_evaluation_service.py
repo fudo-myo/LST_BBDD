@@ -1,3 +1,6 @@
+"""
+This file contains the service logic
+"""
 from typing import List
 
 from sqlalchemy.exc import InvalidRequestError, OperationalError
@@ -16,6 +19,12 @@ except ImportError as error:
 class LstAnalysisEvaluationService:
 
     def __init__(self):
+        """
+        Class constructor
+        :session: connection session to the database
+        :param: all_analysis_eval: attribute that stores all records
+        :param: analysis_by_id: attribute that stores a record filtered by its identifier
+        """
         self.__session: Session = getSession()
         self.__all_analysis_eval = None
         self.__analysis_by_id = None
