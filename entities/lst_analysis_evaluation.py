@@ -1,3 +1,15 @@
+"""
+This class is the entity is associated with the table LST_ANALYSIS_EVALUATION
+:column: id_analysis_evaluation: primary identifier of the table
+:type: Integer
+:column: id_lst_r1_data_check_plot: TODO include description
+:type: Integer
+:column: parameter_description: TODO include description
+:type: String
+:column: parameter_value: TODO include description
+:type: Double
+"""
+
 from sqlalchemy import *
 from sqlalchemy.dialects.mysql import DOUBLE
 
