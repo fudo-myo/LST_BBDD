@@ -1,7 +1,6 @@
 import datetime
 import logging
 
-from pandas._libs.parsers import basestring
 from sqlalchemy import Integer, INTEGER, VARCHAR, DATETIME, String, DateTime
 from sqlalchemy.dialects.mysql import DOUBLE
 from datetime import date
@@ -117,11 +116,11 @@ class Checkers:
     @classmethod
     def validate_string(cls, value, field):
         flag = False
-        if isinstance(value, basestring):
+        if isinstance(value, str):
             flag =True
         else:
             try:
-                assert isinstance(value, basestring)
+                assert isinstance(value, str)
             except AssertionError:
                 logging.basicConfig(level=logging.WARNING,
                                     format=cls.__log_format,

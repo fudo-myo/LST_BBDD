@@ -4,7 +4,7 @@ from sqlalchemy.exc import InvalidRequestError, OperationalError
 from sqlalchemy.orm import Session
 
 from DTO.qp_data_dto import QpDataDto, create_qp_data
-from config.base import getSession
+from config.base import get_session
 from utils.checkers import Checkers
 
 try:
@@ -16,7 +16,7 @@ except ImportError as error:
 class LstQpDataService:
 
     def __init__(self):
-        self.__session: Session = getSession()
+        self.__session: Session = get_session()
         self.__all_qp_data = None
         self.__qp_data_by_id = None
 

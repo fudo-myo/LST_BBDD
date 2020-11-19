@@ -1,12 +1,12 @@
-from sqlalchemy import *
+from sqlalchemy import Table, Column, INTEGER, VARCHAR
 
-from config.base import getBase, getMetaData, getEngine
+from config.base import get_base, get_meta_data, get_engine
 from utils.checkers import Checkers
 from utils.table_names import LstTableNames
 
-if Checkers.check_table_exists(getEngine(), LstTableNames.LST_R1_DATA_CHECK_GENERIC):
-    class LstR1DataCheckGeneric(getBase()):
-        __tablename__ = Table(LstTableNames.LST_R1_DATA_CHECK_GENERIC, getMetaData(), autoload=True, autoload_with=getEngine())
+if Checkers.check_table_exists(get_engine(), LstTableNames.LST_R1_DATA_CHECK_GENERIC):
+    class LstR1DataCheckGeneric(get_base()):
+        __tablename__ = Table(LstTableNames.LST_R1_DATA_CHECK_GENERIC, get_meta_data(), autoload=True, autoload_with=get_engine())
         id_r1_data_check_generic = Column('ID_R1_DATA_CHECK_GENERIC', INTEGER, primary_key=True, nullable=False)
         init_event = Column('INIT_EVENT', INTEGER, nullable=True)
         end_event = Column('END_EVENT', INTEGER, nullable=True)

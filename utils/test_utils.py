@@ -1,4 +1,4 @@
-from config.base import getSession
+from config.base import get_session
 from utils.string_literals import StringLiterals
 
 
@@ -26,7 +26,7 @@ class TestUtils:
 
     @classmethod
     def clear_table_after_test(cls, table):
-        session = getSession()
+        session = get_session()
         session.query(table).delete(synchronize_session=False)
         session.commit()
 

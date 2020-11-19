@@ -4,7 +4,7 @@ from sqlalchemy.exc import InvalidRequestError, OperationalError
 from sqlalchemy.orm import Session
 
 from DTO.configuration_dto import create_configuration, ConfigurationDto
-from config.base import getSession
+from config.base import get_session
 from utils.checkers import Checkers
 
 try:
@@ -16,7 +16,7 @@ except ImportError as error:
 class LstConfigurationService:
 
     def __init__(self):
-        self.__session: Session = getSession()
+        self.__session: Session = get_session()
         self.__all_config = None
         self.__config_by_id = None
 
