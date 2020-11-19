@@ -1,8 +1,5 @@
 import os
-from typing import List
 
-from DTO.read_files_objects.run_standard_dto import RunStandardSto
-from DTO.runs_dto import RunsDto
 from DTO.subruns_dto import SubrunsDto
 from services.lst_runs_service import LstRunsService
 from services.lst_subruns_service import LstSubrunsService
@@ -48,21 +45,23 @@ for i in files_list:
         subrun_dto.process_state = CleanerFiles.check_proccess_state_standard_file(clean_list)
         subrun_dto.id_run = run_service.get_run_by_runnumber(run_name).id_run
         if subrun_dto.id_run is None:
-            list_runs_not_found.append({run_name: subrun_dto.date+" "+subrun_dto.hour})
+            list_runs_not_found.append({run_name: subrun_dto.date + " " + subrun_dto.hour})
             continue
         subrun_exist = subrun_service.get_subrun_by_idrun_and_subrun(subrun_dto.id_run,
                                                                      subrun_dto.subrun_number)
         if subrun_exist is not None and subrun_exist.id_subrun is not None:
-            subrun_service.update_subruns(id_subrun=subrun_exist.id_subrun, subrun_number_to_search=subrun_exist.subrun_number,
+            subrun_service.update_subruns(id_subrun=subrun_exist.id_subrun,
+                                          subrun_number_to_search=subrun_exist.subrun_number,
                                           subrun_number_to_update=subrun_dto.subrun_number, id_run=subrun_dto.id_run,
                                           date=subrun_dto.date, hour=subrun_dto.hour, stream=subrun_dto.stream,
                                           events=subrun_dto.events, length=subrun_dto.length, rate=subrun_dto.rate,
-                                          size=subrun_dto.size, event_type=subrun_dto.event_type, process_state=subrun_dto.process_state)
+                                          size=subrun_dto.size, event_type=subrun_dto.event_type,
+                                          process_state=subrun_dto.process_state)
         else:
             subrun_service.insert_subruns(subrun_dto)
 
 with open('list_runs_not_found_by_standard.txt', 'w') as f:
     for i in list_runs_not_found:
         for key, value in i.items():
-            f.write("%s\n" % "Run"+str(key)+" "+value)
+            f.write("%s\n" % "Run" + str(key) + " " + value)
             print(f"Run {key} dated {value} not found")

@@ -8,8 +8,10 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 from utils.checkers import Checkers
+
 if os.getenv("TEST_PROFILE") == "test_mode":
-    engine = create_engine('mysql://franrome:g.4lan_SB]IpRVYs@muon.gae.ucm.es:3306/DataBase_LST_1_franrome_test', echo=True)
+    engine = create_engine('mysql://franrome:g.4lan_SB]IpRVYs@muon.gae.ucm.es:3306/DataBase_LST_1_franrome_test',
+                           echo=True)
 else:
     engine = create_engine('mysql://franrome:g.4lan_SB]IpRVYs@muon.gae.ucm.es:3306/DataBase_LST_1_franrome', echo=True)
     # engine = create_engine('mysql://root:LST1-bigtelescranrome:g.4lan_SB]IpRope@muon.gae.ucm.es:3306/DataBase_LST_1_franrome', echo=True)
@@ -25,19 +27,20 @@ except OperationalError as error:
     sys.exit()
 
 
-def getSession():
+def get_session():
     return session
 
 
-def getBase():
+def get_base():
     try:
         return declarative_base()
     except SQLAlchemyError as error:
         Checkers.print_exception_two_params(error, error)
 
-def getEngine():
+
+def get_engine():
     return engine
 
 
-def getMetaData():
+def get_meta_data():
     return metadata
