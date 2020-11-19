@@ -4,7 +4,7 @@ from sqlalchemy.exc import InvalidRequestError, OperationalError
 from sqlalchemy.orm import Session
 
 from DTO.runs_dto import RunsDto, create_runs
-from config.base import getSession
+from config.base import get_session
 from entities.lst_dates import LstDates
 from entities.lst_run_type import LstRunType
 from utils.checkers import Checkers
@@ -18,7 +18,7 @@ except ImportError as error:
 class LstRunsService:
 
     def __init__(self):
-        self.__session: Session = getSession()
+        self.__session: Session = get_session()
         self.__all_runs = None
         self.__runs_by_id = None
         self.__runs_by_runnumber_date_runtype = None

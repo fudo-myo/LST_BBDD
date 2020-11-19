@@ -4,7 +4,7 @@ from sqlalchemy.exc import InvalidRequestError, OperationalError
 from sqlalchemy.orm import Session
 
 from DTO.r1_data_check_generic_dto import R1DataCheckGenericDto, create_r1_data_check_generic
-from config.base import getSession
+from config.base import get_session
 from utils.checkers import Checkers
 
 try:
@@ -16,7 +16,7 @@ except ImportError as error:
 class LstR1DataCheckGenericService:
 
     def __init__(self):
-        self.__session: Session = getSession()
+        self.__session: Session = get_session()
         self.__all_r1_data_check_generic = None
         self.__r1_data_check_generic_by_id = None
 

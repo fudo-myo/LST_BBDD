@@ -7,7 +7,7 @@ from sqlalchemy.exc import InvalidRequestError, OperationalError
 from sqlalchemy.orm import Session
 
 from DTO.analysis_evaluation_dto import create_analysis_evaluation, AnalysisEvaluationDto
-from config.base import getSession
+from config.base import get_session
 from utils.checkers import Checkers
 
 try:
@@ -17,19 +17,43 @@ except ImportError as error:
 
 
 class LstAnalysisEvaluationService:
+    """`LstAnalysisEvaluationService` is a class that contains the service
+    logic to manage the data in the `LST_ANALYSIS_EVALUATION` table.
+
+    Attributes
+    ----------
+    self: type
+        description
+    session: Session
+        the Session establishes all conversations with the database
+        and represents a “holding zone” for all the objects which you've
+        loaded or associated with it during its lifespan. It provides the
+        entrypoint to acquire a Query object, which sends queries to the
+        database using the Session object's current database connection,
+        populating result rows into objects that are then stored in the
+        Session, inside a structure called the Identity Map - a data structure
+        that maintains unique copies of each object, where "unique" means
+        "only one object with a particular primary key".
+    all_analysis_eval: List[AnalysisEvaluationDto]
+        List of transfer objects
+    analysis_by_id: AnalysisEvaluationDto
+        Transfer object
+    """
 
     def __init__(self):
-        """
-        Class constructor
-        :session: connection session to the database
-        :param: all_analysis_eval: attribute that stores all records
-        :param: analysis_by_id: attribute that stores a record filtered by its identifier
-        """
-        self.__session: Session = getSession()
+
+        self.__session: Session = get_session()
         self.__all_analysis_eval = None
         self.__analysis_by_id = None
 
     def insert_analysis_eval(self, analysis_eval_insert: AnalysisEvaluationDto):
+        """Method that inserts a record into the `LST_ANALYSIS_EVALUATION` table.
+
+        Arguments
+        ---------
+        analysis_eval_insert: AnalysisEvaluationDto
+            transfer object
+        """
         try:
             analysis_eval_aux = LstAnalysisEvaluation(
                 id_lst_r1_data_check_plot=analysis_eval_insert.id_lst_r1_data_check_plot,
@@ -53,6 +77,19 @@ class LstAnalysisEvaluationService:
 
     def update_analysis_eval(self, id_analysis_evaluation, id_lst_r1_data_check_plot=None, parameter_description=None,
                              parameter_value=None):
+        """Method that updates a record into the `LST_ANALYSIS_EVALUATION` table.
+
+        Arguments
+        ---------
+        id_analysis_evaluation: int
+            primary identifier of the table
+        id_lst_r1_data_check_plot: int
+            TODO include description
+        parameter_description: str
+            TODO include description
+        parameter_value: double
+            TODO include description
+        """
         try:
             analysis_dto_before: AnalysisEvaluationDto = self.get_analysis_by_id(id_analysis_evaluation)
             if Checkers.validate_int(id_analysis_evaluation,
@@ -87,6 +124,13 @@ class LstAnalysisEvaluationService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def delete_analysis_eval(self, id_analysis_evaluation):
+        """Method that deletes a record into the `LST_ANALYSIS_EVALUATION` table.
+
+        Arguments
+        ---------
+        id_analysis_evaluation: int
+            primary identifier of the table
+        """
         try:
             analysis_dto_before: AnalysisEvaluationDto = self.get_analysis_by_id(id_analysis_evaluation)
             if Checkers.validate_int(id_analysis_evaluation,
@@ -112,6 +156,13 @@ class LstAnalysisEvaluationService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def get_all_analysis_eval(self):
+        """Method that gets all the records from the `LST_ANALYSIS_EVALUATION` table.
+
+        Returns
+        -------
+        List[AnalysisEvaluationDto]:
+            returns a list of transfer objects
+        """
         analysis_evaluation_dto_list = []
         try:
             self.__all_analysis_eval: List[AnalysisEvaluationDto] = self.__session.query(LstAnalysisEvaluation).all()
@@ -135,6 +186,18 @@ class LstAnalysisEvaluationService:
         return analysis_evaluation_dto_list
 
     def get_analysis_by_id(self, id_analysis_evaluation):
+        """Method that returns a record from the `LST_ANALYSIS_EVALUATION` table.
+
+        Arguments
+        -------
+        id_analysis_evaluation: int
+            table primary key
+
+        Returns
+        -------
+        AnalysisEvaluationDto:
+            returns an instance of the transfer object
+        """
         try:
             self.__analysis_by_id: AnalysisEvaluationDto = self.__session.query(LstAnalysisEvaluation).filter(
                 LstAnalysisEvaluation.id_analysis_evaluation.like(id_analysis_evaluation)).first()
