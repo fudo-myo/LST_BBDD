@@ -1,12 +1,12 @@
-from sqlalchemy import *
+from sqlalchemy import Table, Column, INTEGER, Date, Time, VARCHAR, FLOAT
 
-from config.base import getBase, getMetaData, getEngine
+from config.base import get_base, get_meta_data, get_engine
 from utils.checkers import Checkers
 from utils.table_names import LstTableNames
 
-if Checkers.check_table_exists(getEngine(), LstTableNames.LST_SUBRUNS):
-    class LstSubruns(getBase()):
-        __tablename__ = Table(LstTableNames.LST_SUBRUNS, getMetaData(), autoload=True, autoload_with=getEngine())
+if Checkers.check_table_exists(get_engine(), LstTableNames.LST_SUBRUNS):
+    class LstSubruns(get_base()):
+        __tablename__ = Table(LstTableNames.LST_SUBRUNS, get_meta_data(), autoload=True, autoload_with=get_engine())
         id_subrun = Column('ID_SUBRUN', INTEGER, primary_key=True, autoincrement=True, nullable=False)
         subrun_number = Column('SUBRUN_NUMBER', INTEGER, nullable=False)
         id_run = Column('ID_RUN', INTEGER, nullable=False)

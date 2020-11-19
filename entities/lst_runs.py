@@ -1,17 +1,12 @@
-from typing import Tuple
+from sqlalchemy import Column, Table, INTEGER, FLOAT, VARCHAR, DateTime, Date, Time
 
-from sqlalchemy import *
-from sqlalchemy.orm import relationship
-from tables.filters import foreign_complibs
-
-from config.base import getBase, getMetaData, getEngine
-from entities.lst_dates import LstDates
+from config.base import get_base, get_meta_data, get_engine
 from utils.checkers import Checkers
 from utils.table_names import LstTableNames
 
-if Checkers.check_table_exists(getEngine(), LstTableNames.LST_RUNS):
-    class LstRuns(getBase()):
-        __tablename__ = Table(LstTableNames.LST_RUNS, getMetaData(), autoload=True, autoload_with=getEngine())
+if Checkers.check_table_exists(get_engine(), LstTableNames.LST_RUNS):
+    class LstRuns(get_base()):
+        __tablename__ = Table(LstTableNames.LST_RUNS, get_meta_data(), autoload=True, autoload_with=get_engine())
         id_run = Column('ID_RUN', INTEGER, primary_key=True, nullable=False)
         run_number = Column('RUN_NUMBER', INTEGER, nullable=False)
         id_run_type = Column('ID_RUN_TYPE', INTEGER, nullable=False)
