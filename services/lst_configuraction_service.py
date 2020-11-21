@@ -1,3 +1,6 @@
+"""
+This file contains the service logic
+"""
 from typing import List
 
 from sqlalchemy.exc import InvalidRequestError, OperationalError
@@ -14,13 +17,41 @@ except ImportError as error:
 
 
 class LstConfigurationService:
+    """`LstConfigurationService` is a class that contains the service
+    logic to manage the data in the `LST_CONFIGURATION` table.
 
+    Attributes
+    ----------
+    self: type
+        description
+    session: Session
+        the Session establishes all conversations with the database
+        and represents a “holding zone” for all the objects which you've
+        loaded or associated with it during its lifespan. It provides the
+        entrypoint to acquire a Query object, which sends queries to the
+        database using the Session object's current database connection,
+        populating result rows into objects that are then stored in the
+        Session, inside a structure called the Identity Map - a data structure
+        that maintains unique copies of each object, where "unique" means
+        "only one object with a particular primary key".
+    all_config: List[ConfigurationDto]
+        List of transfer objects
+    analysis_by_id: ConfigurationDto
+        Transfer object
+    """
     def __init__(self):
         self.__session: Session = get_session()
         self.__all_config = None
         self.__config_by_id = None
 
     def insert_config(self, config_insert: ConfigurationDto):
+        """Method that inserts a record into the `LST_CONFIGURATION` table.
+
+        Arguments
+        ---------
+        config_insert: ConfigurationDto
+            transfer object
+        """
         try:
             config_aux = LstConfiguration(
                 config_description=config_insert.config_description,
@@ -42,6 +73,21 @@ class LstConfigurationService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def update_config(self, id_to_update, config_description=None, param_1=None, param_2=None, param_3=None):
+        """Method that updates a record into the `LST_CONFIGURATION` table.
+
+        Arguments
+        ---------
+        id_to_update: int
+            primary identifier of the table
+        config_description: str
+            Description of camera settings
+        param_1: str
+            auxiliary parameter to include relevant information
+        param_2: str
+            auxiliary parameter to include relevant information
+        param_3: str
+            auxiliary parameter to include relevant information
+        """
         try:
             config_to_update_before: ConfigurationDto = self.get_config_by_id(id_to_update)
             if Checkers.validate_int(id_to_update,
@@ -72,6 +118,13 @@ class LstConfigurationService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def delete_by_id(self, id_to_delete):
+        """Method that deletes a record into the `LST_CONFIGURATION` table.
+
+        Arguments
+        ---------
+        id_to_delete: int
+            primary identifier of the table
+        """
         try:
             config_to_delete_before: ConfigurationDto = self.get_config_by_id(id_to_delete)
             if Checkers.validate_int(id_to_delete,
@@ -96,6 +149,13 @@ class LstConfigurationService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def get_all_config(self):
+        """Method that gets all the records from the `LST_CONFIGURATION` table.
+
+        Returns
+        -------
+        List[ConfigurationDto]:
+            returns a list of transfer objects
+        """
         configuration_dto_list = []
         try:
             self.__all_config: List[ConfigurationDto] = self.__session.query(LstConfiguration).all()
@@ -118,6 +178,18 @@ class LstConfigurationService:
         return configuration_dto_list
 
     def get_config_by_id(self, id_config):
+        """Method that returns a record from the `LST_CONFIGURATION` table.
+
+        Arguments
+        -------
+        id_config: int
+            table primary key
+
+        Returns
+        -------
+        ConfigurationDto:
+            returns an instance of the transfer object
+        """
         try:
             self.__config_by_id: ConfigurationDto = self.__session.query(LstConfiguration).filter(
                 LstConfiguration.id_config.like(id_config)).first()
