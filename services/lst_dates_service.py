@@ -1,5 +1,6 @@
-from typing import List
-
+"""
+This file contains the service logic
+"""
 from sqlalchemy.exc import InvalidRequestError, OperationalError
 from sqlalchemy.orm import Session
 
@@ -14,7 +15,30 @@ except ImportError as error:
 
 
 class LstDatesService:
+    """`LstDatesService` is a class that contains the service
+    logic to manage the data in the `LST_DATES` table.
 
+    Attributes
+    ----------
+    self: type
+        description
+    session: Session
+        the Session establishes all conversations with the database
+        and represents a “holding zone” for all the objects which you've
+        loaded or associated with it during its lifespan. It provides the
+        entrypoint to acquire a Query object, which sends queries to the
+        database using the Session object's current database connection,
+        populating result rows into objects that are then stored in the
+        Session, inside a structure called the Identity Map - a data structure
+        that maintains unique copies of each object, where "unique" means
+        "only one object with a particular primary key".
+    all_dates: List[DatesDto]
+        List of transfer objects
+    date_by_id: DatesDto
+        Transfer object
+    date_between: DatesDto
+        transfer object associated with a date range
+    """
     def __init__(self):
         self.__session: Session = get_session()
         self.__all_dates = None
@@ -22,6 +46,13 @@ class LstDatesService:
         self.__date_between = None
 
     def insert_dates(self, dates_insert: DatesDto):
+        """Method that inserts a record into the `LST_DATES` table.
+
+        Arguments
+        ---------
+        dates_insert: DatesDto
+            transfer object
+        """
         try:
             dates_aux = LstDates(date_entity=dates_insert.date_dto)
             self.__session.add(dates_aux)
@@ -39,6 +70,17 @@ class LstDatesService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def update_dates(self, id_date, date_to_search, date_to_update=None):
+        """Method that updates a record into the `LST_DATES` table.
+
+        Arguments
+        ---------
+        id_date: int
+            primary identifier of the table
+        date_to_search: Date
+            date to search the record in the database
+        date_to_update: Date
+            new date value to update
+        """
         try:
             date_before: DatesDto = self.get_date_by_id(date_to_search, id_date)
             if Checkers.validate_int(id_date, LstDates.id_date.name) and \
@@ -68,6 +110,15 @@ class LstDatesService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def delete_date(self, id_date, date_to_delete):
+        """Method that deletes a record into the `LST_DATES` table.
+
+        Arguments
+        ---------
+        id_date: int
+            primary identifier of the table
+        date_to_delete: Date
+            date value to delete record in database
+        """
         try:
             date_before: DatesDto = self.get_date_by_id(date_to_delete, id_date)
             if Checkers.validate_int(id_date, LstDates.id_date.name) and \
@@ -98,6 +149,13 @@ class LstDatesService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def get_all_dates(self):
+        """Method that gets all the records from the `LST_DATES` table.
+
+        Returns
+        -------
+        List[DatesDto]:
+            returns a list of transfer objects
+        """
         dates_dto_list = []
         try:
             self.__all_dates = self.__session.query(LstDates).all()
@@ -119,6 +177,20 @@ class LstDatesService:
         return dates_dto_list
 
     def get_date_by_id(self, date=None, id_date=None):
+        """Method that returns a record from the `LST_DATES` table.
+
+        Arguments
+        -------
+        id_date: int
+            table primary key
+        date: Date
+            date value to filter the record in the database
+
+        Returns
+        -------
+        DatesDto:
+            returns an instance of the transfer object
+        """
         try:
             if id_date is not None:
                 self.__date_by_id = self.__session.query(LstDates).filter(
@@ -144,6 +216,20 @@ class LstDatesService:
         return create_date(None, None)
 
     def get_date_between_dates(self, date_from, date_to):
+        """Method that returns a record from the `LST_DATES` table.
+
+        Arguments
+        -------
+        date_from: Date
+            start date value to filter in database
+        date_to: Date
+            end date value to filter in database
+
+        Returns
+        -------
+        DatesDto:
+            returns an instance of the transfer object
+        """
         dates_dto_list = []
         try:
             self.__date_between = self.__session.query(LstDates.id_date).filter(
