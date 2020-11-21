@@ -1,3 +1,6 @@
+"""
+This file contains the service logic
+"""
 from typing import List
 
 from sqlalchemy.exc import InvalidRequestError, OperationalError
@@ -14,13 +17,41 @@ except ImportError as error:
 
 
 class LstDl1aService:
+    """`LstDl1aService` is a class that contains the service
+    logic to manage the data in the `LST_DL1A` table.
 
+    Attributes
+    ----------
+    self: type
+        description
+    session: Session
+        the Session establishes all conversations with the database
+        and represents a “holding zone” for all the objects which you've
+        loaded or associated with it during its lifespan. It provides the
+        entrypoint to acquire a Query object, which sends queries to the
+        database using the Session object's current database connection,
+        populating result rows into objects that are then stored in the
+        Session, inside a structure called the Identity Map - a data structure
+        that maintains unique copies of each object, where "unique" means
+        "only one object with a particular primary key".
+    all_dl1a: List[Dl1aDto]
+        List of transfer objects
+    dl1a_by_id: Dl1aDto
+        Transfer object
+    """
     def __init__(self):
         self.__session: Session = get_session()
         self.__all_dl1a = None
         self.__dl1a_by_id = None
 
     def insert_dl1a(self, dl1a_insert: Dl1aDto):
+        """Method that inserts a record into the `LST_DL1A` table.
+
+        Arguments
+        ---------
+        dl1a_insert: Dl1aDto
+            transfer object
+        """
         try:
             dl1a_aux = LstDl1a(subrun_number=dl1a_insert.subrun_number,
                                dl1a_path_file=dl1a_insert.dl1a_path_file)
@@ -40,6 +71,17 @@ class LstDl1aService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def update_dl1a(self, id_dl1a, subrun_number=None, dl1a_path_file=None):
+        """Method that updates a record into the `LST_DL1A` table.
+
+        Arguments
+        ---------
+        id_dl1a: int
+            primary identifier of the table
+        subrun_number: int
+            subrun number
+        dl1a_path_file: str
+            dl1a file path
+        """
         try:
             dl1a_before: Dl1aDto = self.get_dl1a_by_id(id_dl1a)
             if Checkers.validate_int(id_dl1a, LstDl1a.id_dl1a) and dl1a_before.id_dl1a is not None:
@@ -67,6 +109,13 @@ class LstDl1aService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def delete_dl1a(self, id_dl1a):
+        """Method that deletes a record into the `LST_DL1A` table.
+
+        Arguments
+        ---------
+        id_dl1a: int
+            primary identifier of the table
+        """
         try:
             dl1a_before: Dl1aDto = self.get_dl1a_by_id(id_dl1a)
             if Checkers.validate_int(id_dl1a, LstDl1a.id_dl1a) and dl1a_before.id_dl1a is not None:
@@ -90,6 +139,13 @@ class LstDl1aService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def get_all_dl1a(self):
+        """Method that gets all the records from the `LST_DL1A` table.
+
+        Returns
+        -------
+        List[Dl1aDto]:
+            returns a list of transfer objects
+        """
         dl1a_dto_list = []
         try:
             self.__all_dl1a: List[Dl1aDto] = self.__session.query(LstDl1a).all()
@@ -112,6 +168,18 @@ class LstDl1aService:
         return dl1a_dto_list
 
     def get_dl1a_by_id(self, id_dl1a):
+        """Method that returns a record from the `LST_DL1A` table.
+
+        Arguments
+        -------
+        id_dl1a: int
+            table primary key
+
+        Returns
+        -------
+        Dl1aDto:
+            returns an instance of the transfer object
+        """
         try:
             self.__dl1a_by_id: Dl1aDto = self.__session.query(LstDl1a).filter(LstDl1a.id_dl1a.like(id_dl1a)).first()
             if self.__dl1a_by_id is not None:
