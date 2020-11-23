@@ -1,3 +1,6 @@
+"""
+This file contains the service logic
+"""
 from typing import List
 
 from sqlalchemy.exc import InvalidRequestError, OperationalError
@@ -14,13 +17,41 @@ except ImportError as error:
 
 
 class LstFilesOfSubrunService:
+    """`LstFilesOfSubrunService` is a class that contains the service
+    logic to manage the data in the `LST_FILES_OF_SUBRUN` table.
 
+    Attributes
+    ----------
+    self: type
+        description
+    session: Session
+        the Session establishes all conversations with the database
+        and represents a “holding zone” for all the objects which you've
+        loaded or associated with it during its lifespan. It provides the
+        entrypoint to acquire a Query object, which sends queries to the
+        database using the Session object's current database connection,
+        populating result rows into objects that are then stored in the
+        Session, inside a structure called the Identity Map - a data structure
+        that maintains unique copies of each object, where "unique" means
+        "only one object with a particular primary key".
+    all_files_of_subrun: List[FilesOfSubrunDto]
+        List of transfer objects
+    files_by_id: FilesOfSubrunDto
+        Transfer object
+    """
     def __init__(self):
         self.__session: Session = get_session()
         self.__all_files_of_subrun = None
         self.__files_by_id = None
 
     def insert_files_of_subrun(self, files_of_subrun_insert: FilesOfSubrunDto):
+        """Method that inserts a record into the `LST_FILES_OF_SUBRUN` table.
+
+        Arguments
+        ---------
+        files_of_subrun_insert: FilesOfSubrunDto
+            transfer object
+        """
         try:
             files_of_subrun_aux = LstFilesOfSubrun(
                 subrun_number=files_of_subrun_insert.subrun_number,
@@ -44,6 +75,21 @@ class LstFilesOfSubrunService:
 
     def update_files_of_subrun(self, id_file_subrun, subrun_number=None, path_file=None, num_events=None,
                                array_num_files=None):
+        """Method that updates a record into the `LST_FILES_OF_SUBRUN` table.
+
+        Arguments
+        ---------
+        id_file_subrun: int
+            primary identifier of the table
+        subrun_number: int
+            subrun number
+        path_file: str
+            file path
+        num_events: int
+            number of events
+        array_num_files: str
+            TODO include description
+        """
         try:
             files_before: FilesOfSubrunDto = self.get_file_subrun_by_id(id_file_subrun)
             if Checkers.validate_int(id_file_subrun,
@@ -75,6 +121,13 @@ class LstFilesOfSubrunService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def delete_files_of_subrun(self, id_file_subrun):
+        """Method that deletes a record into the `LST_FILES_OF_SUBRUN` table.
+
+        Arguments
+        ---------
+        id_file_subrun: int
+            primary identifier of the table
+        """
         try:
             files_before: FilesOfSubrunDto = self.get_file_subrun_by_id(id_file_subrun)
             if Checkers.validate_int(id_file_subrun,
@@ -99,6 +152,13 @@ class LstFilesOfSubrunService:
             Checkers.print_exception_two_params(error_request2.orig.args[1], error_request2.orig.args[0])
 
     def get_all_files_of_subrun(self):
+        """Method that gets all the records from the `LST_FILES_OF_SUBRUN` table.
+
+        Returns
+        -------
+        List[FilesOfSubrunDto]:
+            returns a list of transfer objects
+        """
         files_dto_list = []
         try:
             self.__all_files_of_subrun: List[FilesOfSubrunDto] = self.__session.query(LstFilesOfSubrun).all()
@@ -123,6 +183,18 @@ class LstFilesOfSubrunService:
         return files_dto_list
 
     def get_file_subrun_by_id(self, id_file_subrun):
+        """Method that returns a record from the `LST_FILES_OF_SUBRUN` table.
+
+        Arguments
+        -------
+        id_file_subrun: int
+            table primary key
+
+        Returns
+        -------
+        FilesOfSubrunDto:
+            returns an instance of the transfer object
+        """
         try:
             self.__files_by_id: FilesOfSubrunDto = self.__session.query(LstFilesOfSubrun).filter(
                 LstFilesOfSubrun.id_file_subrun.like(id_file_subrun)).first()

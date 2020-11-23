@@ -1,8 +1,22 @@
-
-
 class FilesOfSubrunDto:
+    """
+    This class is the transfer object of the `LST_FILES_OF_SUBRUN` table.
 
-    def __init__(self,id_file_subrun=None,subrun_number=None,path_file=None,num_events=None,array_num_files=None):
+    Attributes
+    ----------
+    id_file_subrun: int
+        primary identifier of the table
+    subrun_number: int
+        subrun number
+    path_file: str
+        file path
+    num_events: int
+        number of events
+    array_num_files: str
+        TODO include description
+    """
+
+    def __init__(self, id_file_subrun=None, subrun_number=None, path_file=None, num_events=None, array_num_files=None):
         self.__id_file_subrun = id_file_subrun
         self.__subrun_number = subrun_number
         self.__path_file = path_file
@@ -50,7 +64,29 @@ class FilesOfSubrunDto:
         self.__array_num_files = value
 
 
-def create_files_of_subrun(id_file_subrun,subrun_number,path_file,num_events,array_num_files):
+def create_files_of_subrun(id_file_subrun, subrun_number, path_file, num_events, array_num_files):
+    """
+    This method create a DTO for Files of Subrun and set every field with
+    the paremeters given as arguments
+
+    Arguments
+    ---------
+    id_file_subrun: int
+        primary identifier of the table
+    subrun_number: int
+        subrun number
+    path_file: str
+        file path
+    num_events: int
+        number of events
+    array_num_files: str
+        TODO include description
+
+    Returns
+    -------
+    FilesOfSubrunDto:
+        returns an instance of the transfer object
+    """
     dto = FilesOfSubrunDto()
     dto.id_file_subrun = id_file_subrun
     dto.subrun_number = subrun_number
