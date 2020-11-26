@@ -1,4 +1,18 @@
 class PixelGroupDto:
+    """
+    This class is the transfer object of the `LST_PIXEL_GROUP` table.
+
+    Attributes
+    ----------
+    id_pixel_group: int
+        primary identifier of the table
+    pixel_group_number: int
+        pixel group number
+    id_config: int
+        camera configuration identifier
+    other_data: str
+        auxiliary parameter to include any relevant data
+    """
 
     def __init__(self, id_pixel_group=None, pixel_group_number=None, id_config=None, other_data=None):
         self.__id_pixel_group = id_pixel_group
@@ -38,7 +52,29 @@ class PixelGroupDto:
     def other_data(self, value):
         self.__other_data = value
 
+
 def create_pixel_group(id_pixel_group, pixel_group_number, id_config, other_data):
+    """
+    This method create a DTO for Pixel Group and set every field with
+    the paremeters given as arguments
+
+    Arguments
+    ---------
+
+    id_pixel_group: int
+        primary identifier of the table
+    pixel_group_number: int
+        pixel group number
+    id_config: int
+        camera configuration identifier
+    other_data: str
+        auxiliary parameter to include any relevant data
+
+    Returns
+    -------
+    PixelGroupDto:
+        returns an instance of the transfer object
+    """
     dto = PixelGroupDto()
     dto.id_pixel_group = id_pixel_group
     dto.pixel_group_number = pixel_group_number
